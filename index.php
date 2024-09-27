@@ -69,6 +69,7 @@
                 </div>
               </div>  
         </div>
+        <!-- AQUI DEVE COLOCAR UM VERIFICADOR SE JÁ ESTÁ LOGADO SUMIR COM ESSA PARTE -->
         <div class="row">
         <div class="cta-text">
                   <h3>Ainda não tem um Login? Cadastre-se agora.</h3>
@@ -76,6 +77,7 @@
                   <a href="login.php" class="btn btn-theme btn-lg"> Cadastre-se <i class="fa fa-angle-right"></i></a>
                 </div>
         </div>
+        <!-- ACHO QUE VAI ATÉ AQUI -->
 </div>
      </div>
   </section>
