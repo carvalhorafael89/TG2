@@ -18,69 +18,104 @@
     <div class="row">
       <div class="col-lg-12">
         
-  <!-- Slider -->
-        <div id="main-slider" class="main-slider flexslider">
-            <ul class="slides">
-              <li>
-                <img src="img/slides/flexslider/1.jpg" alt="" />
-                <div class="flex-caption">
+
+<!-- Slider -->
+<div id="main-slider" class="main-slider flexslider">
+    <ul class="slides">
+        <li>
+            <img src="img/slides/flexslider/1.jpg" alt="" />
+            <div class="flex-caption">
+                <?php if ($nivel == "Professor") { // Verifica se o usuário é professor ?>
+                    <h3>Cadastre sua prova</h3>
+                    <p>Use o sistema de cadastro para gerar seu simulado</p>
+                    <a href="cadprova.php" class="btn btn-theme">Cadastrar</a>
+                <?php } else { // Caso contrário, o conteúdo é para aluno/visitante ?>
                     <h3>Realize seu simulado</h3> 
                     <p>Com o nosso sistema de simulados online o resultado sai na hora.</p> 
                     <a href="realiza.php" class="btn btn-theme">Começar</a>
-                </div>
-              </li>
-              <li>
-                 <img src="img/slides/flexslider/2.jpg" alt="" />
-                 <div class="flex-caption">
+                <?php } ?>
+            </div>
+        </li>
+
+        <li>
+            <img src="img/slides/flexslider/2.jpg" alt="" />
+            <div class="flex-caption">
+                <?php if ($nivel == "Professor") { // Verifica se o usuário é professor ?>
+                    <h3>Cadastre seu aluno</h3>
+                    <p>É necessário o cadastro dos alunos para a realização dos simulados</p>
+                    <a href="cadAluno.php" class="btn btn-theme">Cadastrar Aluno</a>
+                <?php } else { // Caso contrário, o conteúdo é para aluno/visitante ?>
                     <h3>Aumente suas chances</h3> 
                     <p>Solicite ao professor o código da prova e teste seus conhecimentos.</p> 
                     <a href="realiza.php" class="btn btn-theme">Começar</a>
-                </div>
-              </li>
-              <li>
-                <img src="img/slides/flexslider/3.jpg" alt="" />
-                <div class="flex-caption">
+                <?php } ?>
+            </div>
+        </li>
+
+        <li>
+            <img src="img/slides/flexslider/3.jpg" alt="" />
+            <div class="flex-caption">
+                <?php if ($nivel == "Professor") { // Verifica se o usuário é professor ?>
+                    <h3>Não esqueça!</h3>
+                    <p>Forneça o código da prova para seus alunos que irão realizar o simulado</p>
+                    <!-- Sem botão para este slide -->
+                <?php } else { // Caso contrário, o conteúdo é para aluno/visitante ?>
                     <h3>Faça onde Quiser</h3> 
                     <p>E correção é na mesma hora, sem esperas.</p> 
                     <a href="veprova.php" class="btn btn-theme">Começar</a>
-                </div>
-              </li>
-            </ul>
-        </div>
-  <!-- end slider -->
+                <?php } ?>
+            </div>
+        </li>
+    </ul>
+</div>
+<!-- end slider -->
       </div>
     </div>
   </div>  
 
-
-  </section>
-     <section class="callaction">
-     <div class="container">
+<section class="callaction">
+    <div class="container">
         <div class="row">
-              <div class="col-lg-8">
+            <div class="col-lg-8">
                 <div class="cta-text">
-                  <h2>Faça agora seu <span>simulado</span> on-line</h2>
-                  <p> Faça o login para realizar seu simulado. Solicite ao professor o código da prova.</p>
+                    <?php if ($nivel == "Professor") { // Mostra esta seção apenas se o usuário for um professor ?>
+                        <h2>Professor, inclua a sua prova para a realização dos testes</h2>
+                        <p><h3>Não esqueça de fornecer o código para seus alunos</h3></p>
+                        <a href="cadprova.php" class="btn btn-theme btn-lg">Cadastrar Prova <i class="fa fa-angle-right"></i></a>
+                    <?php } else { // Mostra a seção original se o usuário não for professor ?>
+                        <h2>Faça agora seu <span>simulado</span> on-line</h2>
+                        <p><h3>Solicite ao professor o código da prova</h3></p>
+                        <a href="realiza.php" class="btn btn-theme btn-lg">Começar</a>
+                        
+                        <?php if ($nivel == "Visitante") { // Mostra uma mensagem para visitantes ?>
+                            
+                        <?php } ?>
+                    <?php } ?>
                 </div>
-              </div>
-              <div class="col-lg-4">
+            </div>
+            <div class="col-lg-4">
                 <div class="cta-btn">
-                  <a href="login.php" class="btn btn-theme btn-lg"> Login <i class="fa fa-angle-right"></i></a>
+                    <?php if ($nivel == "Visitante") { // Mostra o botão de login apenas para visitantes ?>
+                        <a href="login.php" class="btn btn-theme btn-lg"> Login <i class="fa fa-angle-right"></i></a>
+                    <?php } ?>
                 </div>
-              </div>  
+            </div>  
         </div>
-        <!-- AQUI DEVE COLOCAR UM VERIFICADOR SE JÁ ESTÁ LOGADO SUMIR COM ESSA PARTE -->
+        
         <div class="row">
-        <div class="cta-text">
-                  <h3>Ainda não tem um Login? Cadastre-se agora.</h3>
-                  <div class="cta-btn">
-                  <a href="login.php" class="btn btn-theme btn-lg"> Cadastre-se <i class="fa fa-angle-right"></i></a>
-                </div>
+            <div class="cta-text">
+                <?php if ($nivel == "Visitante") { // Mostra a mensagem de cadastro apenas para visitantes ?>
+                    <h3>Ainda não tem um Login? Cadastre-se agora.</h3>
+                    <div class="cta-btn">
+                        <a href="login.php" class="btn btn-theme btn-lg"> Cadastre-se <i class="fa fa-angle-right"></i></a>
+                    </div>
+                <?php } ?>
+            </div>
         </div>
-        <!-- ACHO QUE VAI ATÉ AQUI -->
-</div>
-     </div>
-  </section>
+    </div>
+</section>
+
+
   
   <section id="content">
     <div class="container">
@@ -159,14 +194,15 @@
       <div class="col-lg-12">
         <div class="row">
           <div class="col-sm-6 col-lg-6">
-            <h4>Sobre a FATEC Sorocaba</h4>
-            <p><strong>A Faculdade de Tecnologia de Sorocaba foi criada em 20/05/1970 pelo então Governador do Estado de São Paulo, Dr. Roberto Costa de Abreu Sodré.</strong></p>
-            <p>
-            Foi a primeira escola pública de nível superior em Sorocaba. O primeiro dia letivo na Fatec Sorocaba ocorreu no dia 07/06/1971, nas instalações da atual Etec Rubens de Faria e Souza com 66 alunos que iniciavam seus estudos no então Curso Técnico Superior de Oficinas, atualmente Tecnologia em Fabricação Mecânica. </p>
-            <p>
-            Considerada, segundo avaliação do MEC (IGC 2009), a melhor Faculdade de Tecnologia do Brasil, a Instituição possui nove cursos de graduação presencial em tecnologia: Análise e Desenvolvimento de Sistemas, Eletrônica Automotiva, Fabricação Mecânica, Logística, Manufatura Avançada,Polímeros, Processos Metalúrgicos, Projetos Mecânicos e Sistemas Biomédicos. E um curso na modalidade de EAD (Ensino a Distância): Gestão Empresarial
-                                                </p>
+            <h3>Sobre a FATEC Itu</h3>
+            <h4><p><strong>Missão, Visão e Valores da Fatec Itu:</p></h4>
+              <p>Missão:</strong> Oferecer educação superior profissional tecnológica de qualidade, através da formação de tecnólogos competentes, socialmente responsáveis, éticos e capazes de promover a ampliação e reprodução dos conhecimentos tecnológicos por meio de ações produtivas que privilegiem as demandas da sociedade em prol de uma melhoria de qualidade de vide da sociedade brasileira.</p>
+              <p><strong>Visão: </strong>Ser uma instituição de excelência na educação superior tecnológica, reconhecida por prestar serviços de qualidade, relevância e ética, priorizando a sustentabilidade no meio onde está inserida e a inclusão social, sendo agente de desenvolvimento e transformação da sociedade.</p>
+              <p><strong>Valores: </strong>Excelência e comprometimento com a educação superior tecnológica de qualidade; desenvolvimento de uma consciência crítica; Inovação e criatividade precedidas pela ética, que levam a construção e socialização do conhecimento e a consequente transformação do meio onde está inserida.</p>
+              <p>São os princípios que moldam a Fatec Itu e orientam nossas ações diárias em direção a uma educação superior tecnológica de excelência, com impacto real na sociedade.</p>
+            </p>
           </div>
+          <!--
           <div class="col-sm-6 col-lg-6">
             <h4>Estatísticas</h4>
             <div class="progress">
@@ -195,6 +231,7 @@
               </div>
             </div>
           </div>
+                -->
         </div>
       </div>
     </div>

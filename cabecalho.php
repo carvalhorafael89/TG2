@@ -90,7 +90,7 @@ if (isset($_COOKIE['Nome']))
 }
 else
 {
-    echo 'Olá,&nbsp;&nbsp;bem-vindo(a) s'.$nivel.'</li>';
+    echo 'Olá,&nbsp;&nbsp;bem-vindo(a)</li>';
 }
 echo '
               </ul>
@@ -122,80 +122,77 @@ echo '
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">';
-  if ($nivel!="Professor"){ echo '<li class="dropdown active">
-      <a href="index.php" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Alunos<i class="fa fa-angle-down"></i></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="realiza.php">Realizar Prova/Simulado</a></li>
-                                <li><a href="veprova.php">Rever Prova/Simulado</a></li>';
-     // Habilita menu de cadastro
-     if ( $nivel == "Visitante") {  echo '<li><a href="cadAluno.php">Realizar Cadastro</a></li>'; }
   
-                        echo '</ul>        
-            
-                          </li>'; }
-
-                        if ($nivel=="Professor"){
-                        echo '<li class="dropdown">
-                            <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Professor <i class="fa fa-angle-down"></i></a>
-                            <ul class="dropdown-menu">
-                              <li class="dropdown-submenu">
-                                <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Questões</a>
-          <ul class="dropdown-menu">
-                                            <li><a href="cadquestao.php">Incluir</a></li>
-                                            <li><a href="#">Alterar</a></li>
-                                            <li><a href="#">Excluir</a></li>
-                                            
-          </ul>  
-        </li>
-                                <li class="dropdown-submenu">
-                                <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Provas</a>
-          <ul class="dropdown-menu">
-                                            <li><a href="cadprova.php">Criar nova prova ou simulado</a></li>
-                                            <li><a href="altprova.php">Alterar prova ou simulado</a></li>
-                                            <li><a href="altprova.php">Excluir prova ou simulado</a></li>
-                                            <li><a href="realiza2.php">Testar  prova ou simulado</a></li>
-                                            <li><a href="rel6.php">Encerra todas as provas em andamento</a></li>
-                                            
-          </ul>  
-        </li>
-                                <li class="dropdown-submenu">
-                                <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Alunos</a>
-          <ul class="dropdown-menu">
-                                            <li><a href="cadAluno.php">Cadastrar Aluno(a)</a></li>
-                                            <li><a href="#">Alterar dados de Aluno(a)</a></li>
-                                            <li><a href="#">Excluir Aluno(a)</a></li>
-                                            <li><a href="#">Pesquisar Aluno Cadastrado</a></li>
-          </ul>  
-        </li>
-                                <li class="dropdown-submenu">
-                                <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Relatórios</a>
-          <ul class="dropdown-menu">
-                                            <li><a href="rel1.php">Relatório geral da prova</a></li>
-                                            <li><a href="rel2.php">Relatório da prova por disciplina</a></li>
-                                            <li><a href="rel3.php">Relatório por aluno</a></li>
-                                            <li><a href="rel4.php">Relatório para Impressão</a></li>
-                                            <li><a href="rel5.php">Baixar relatório geral em Excel</a></li>
-                          
-          </ul>  
-        </li>
-                            </ul>
-                        </li>';}
+  // Aqui está a modificação, exibindo o menu "Alunos" apenas se o nível for de um aluno logado
+  if ($nivel == "Aluno"){ // Exibe apenas se o nível for de um aluno logado
+    echo '<li class="dropdown active">
+    <a href="index.php" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Alunos<i class="fa fa-angle-down"></i></a>
+        <ul class="dropdown-menu">
+            <li><a href="realiza.php">Realizar Prova/Simulado</a></li>
+            <li><a href="veprova.php">Rever Prova/Simulado</a></li>
+        </ul>        
+    </li>'; 
+}
                         
-                        echo '
-                        <li><a href="#">Perfil</a></li>                      
-                        <li><a href="#">Contato</a></li>';
-  
-  
-                          if ( $nivel == "Visitante") {
-                            echo '<li><a href="login.php">LogIn</a>'; }
-                          else { echo '<li><a href="sair.php">Sair</a></li>'; }
-  
-  
-                   echo ' </ul>
-                </div>
-            </div>
+if ($nivel=="Professor"){
+echo '<li class="dropdown">
+    <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Professor <i class="fa fa-angle-down"></i></a>
+    <ul class="dropdown-menu">
+      <li class="dropdown-submenu">
+        <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Questões</a>
+        <ul class="dropdown-menu">
+            <li><a href="cadquestao.php">Incluir</a></li>
+            <li><a href="#">Alterar</a></li>
+            <li><a href="#">Excluir</a></li>
+        </ul>  
+      </li>
+      <li class="dropdown-submenu">
+        <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Provas</a>
+        <ul class="dropdown-menu">
+            <li><a href="cadprova.php">Criar nova prova ou simulado</a></li>
+            <li><a href="altprova.php">Alterar prova ou simulado</a></li>
+            <li><a href="altprova.php">Excluir prova ou simulado</a></li>
+            <li><a href="realiza2.php">Testar  prova ou simulado</a></li>
+            <li><a href="rel6.php">Encerra todas as provas em andamento</a></li>
+        </ul>  
+      </li>
+      <li class="dropdown-submenu">
+        <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Alunos</a>
+        <ul class="dropdown-menu">
+            <li><a href="cadAluno.php">Cadastrar Aluno(a)</a></li>
+            <li><a href="#">Alterar dados de Aluno(a)</a></li>
+            <li><a href="#">Excluir Aluno(a)</a></li>
+            <li><a href="#">Pesquisar Aluno Cadastrado</a></li>
+        </ul>  
+      </li>
+      <li class="dropdown-submenu">
+        <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown">Relatórios</a>
+        <ul class="dropdown-menu">
+            <li><a href="rel1.php">Relatório geral da prova</a></li>
+            <li><a href="rel2.php">Relatório da prova por disciplina</a></li>
+            <li><a href="rel3.php">Relatório por aluno</a></li>
+            <li><a href="rel4.php">Relatório para Impressão</a></li>
+            <li><a href="rel5.php">Baixar relatório geral em Excel</a></li>
+        </ul>  
+      </li>
+    </ul>
+</li>';}
+                        
+echo '
+<li><a href="#">Perfil</a></li>                      
+<li><a href="#">Contato</a></li>';
+
+if ($nivel == "Visitante") {
+    echo '<li><a href="login.php">LogIn</a>';
+} else { 
+    echo '<li><a href="sair.php">Sair</a></li>'; 
+}
+
+echo ' </ul>
         </div>
-  </header>
+    </div>
+</div>
+</header>
 ';
 ?>
 <!-- Fim do cabeçalho -->

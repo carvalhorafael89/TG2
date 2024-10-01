@@ -3,6 +3,20 @@
   // Verifica e o usuário realizou o LogIN e o nível de acesso do mesmo.
   $nivel ="Visitante";
   
+
+  if (isset($_COOKIE['Nivel']) && isset($_COOKIE['Nome']) && isset($_COOKIE['Email']) && isset($_COOKIE['Codigo'])) {
+    // Se os cookies existirem, define o nível e os demais dados
+    $nivel = $_COOKIE['Nivel'];
+    $nome  = $_COOKIE['Nome'];
+    $Email = $_COOKIE['Email'];
+    $codigo = $_COOKIE['Codigo'];
+} else {
+    // Se não existirem, garante que o nível seja "Visitante"
+    $nivel = "Visitante";
+}
+
+
+
   if (isset($_COOKIE['Nivel']))
   {
     $nivel =$_COOKIE['Nivel'];
@@ -108,17 +122,19 @@ echo '
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">';
-  if ($nivel!="Professor"){ echo '<li class="dropdown active">
-      <a href="index.php" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Alunos<i class="fa fa-angle-down"></i></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="realiza.php">Realizar Prova/Simulado</a></li>
-                                <li><a href="veprova.php">Rever Prova/Simulado</a></li>';
-     // Habilita menu de cadastro
-     if ( $nivel == "Visitante") {  echo '<li><a href="cadAluno.php">Realizar Cadastro</a></li>'; }
-  
-                        echo '</ul>        
-            
-                          </li>'; }
+                    if ($nivel!="Professor"){ 
+                      echo '<li class="dropdown active">
+                      <a href="index.php" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Alunos<i class="fa fa-angle-down"></i></a>
+                          <ul class="dropdown-menu">
+                              <li><a href="realiza.php">Realizar Prova/Simulado</a></li>
+                              <li><a href="veprova.php">Rever Prova/Simulado</a></li>';
+                      // Habilita menu de cadastro
+                      if ( $nivel == "Visitante") {  
+                          echo '<li><a href="cadAluno.php">Realizar Cadastro</a></li>'; 
+                      }
+                      echo '</ul>        
+                      </li>'; 
+                  }
 
                         if ($nivel=="Professor"){
                         echo '<li class="dropdown">
@@ -178,6 +194,7 @@ echo '
   
   
                    echo ' </ul>
+                   
                 </div>
             </div>
         </div>
