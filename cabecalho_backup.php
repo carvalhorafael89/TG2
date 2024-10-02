@@ -103,6 +103,8 @@ echo '
                 <span class="sb-icon-search" title="Clique para iniciar a busca"></span>
               </form>
             </div>
+
+
             </div>
           </div>
         </div>
@@ -124,14 +126,12 @@ echo '
   // Aqui está a modificação, exibindo o menu "Alunos" apenas se o nível for de um aluno logado
   if ($nivel == "Aluno"){ // Exibe apenas se o nível for de um aluno logado
     echo '<li class="dropdown active">
-    <a href="index.php" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false"> Aluno  <i class="fa fa-angle-down"></i></a>
+    <a href="index.php" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Alunos<i class="fa fa-angle-down"></i></a>
         <ul class="dropdown-menu">
             <li><a href="realiza.php">Realizar Prova/Simulado</a></li>
             <li><a href="veprova.php">Rever Prova/Simulado</a></li>
         </ul>        
-    </li>';
-    echo '
-<li><a href="#">Perfil</a></li>'; 
+    </li>'; 
 }
                         
 if ($nivel=="Professor"){
@@ -176,9 +176,11 @@ echo '<li class="dropdown">
         </ul>  
       </li>
     </ul>
-</li>';
+</li>';}
+                        
 echo '
-<li><a href="#">Perfil</a></li>';}
+<li><a href="#">Perfil</a></li>                      
+<li><a href="#">Contato</a></li>';
 
 if ($nivel == "Visitante") {
     echo '<li><a href="login.php">LogIn</a>';

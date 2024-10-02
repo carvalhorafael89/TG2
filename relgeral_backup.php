@@ -143,7 +143,7 @@ if (isset($_COOKIE['Nivel']))
                     //echo "<tr><td><h4>Questão</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta do Aluno</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta Correta</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Situação</h4></td></tr>";
                     while ($dados=mysqli_fetch_array($data))
                     {
-                      $matriz[$linha][$total_questoes] = isset($matriz[$linha][$total_questoes]) ? $matriz[$linha][$total_questoes] : 0;
+                       $matriz[$linha][$total_questoes]=0;
                        if ($dados['Resposta_Aluno']==$dados['Resposta_Correta'])
                         {  
                           echo "<td bgcolor=\"lightgreen\">&nbsp;";
@@ -152,8 +152,7 @@ if (isset($_COOKIE['Nivel']))
                           //echo $dados['Resposta_Correta'];
                          
                             $pontos=$pontos+1;
-                            $matriz[$linha][$total_questoes] = isset($matriz[$linha][$total_questoes]) ? $matriz[$linha][$total_questoes] : 1;
-
+                            $matriz[$linha][$total_questoes]=1;
                         }
                         else
                         {
@@ -209,7 +208,7 @@ if (isset($_COOKIE['Nivel']))
                     $j=1;
                     $somamatriz=0;
                     do {
-                      $somamatriz = $somamatriz + (isset($matriz[$j][$i]) ? $matriz[$j][$i] : 0);
+                     $somamatriz=$somamatriz+$matriz[$j][$i];
                     } while($j++<=$linha);
                     
                   echo $somamatriz;
@@ -227,7 +226,7 @@ if (isset($_COOKIE['Nivel']))
                     $j=1;
                     $somamatriz=0;
                     do {
-                      $somamatriz = $somamatriz + (isset($matriz[$j][$i]) ? $matriz[$j][$i] : 0);
+                     $somamatriz=$somamatriz+$matriz[$j][$i];
                     } while($j++<=$linha);
                     
                     echo round($somamatriz/($linha-1)*100,0);
@@ -432,7 +431,7 @@ else
                     $nq=1;
                       while ($dados=mysqli_fetch_array($data))
                     {
-                      $matriz[$linha][$total_questoes] = isset($matriz[$linha][$total_questoes]) ? $matriz[$linha][$total_questoes] : 0;
+                       $matriz[$linha][$total_questoes]=0;
                       
                        if ($dados['Resposta_Aluno']==$dados['Resposta_Correta'])
                         {  
@@ -445,7 +444,7 @@ else
                           //echo $dados['Resposta_Correta'];
                          
                             $pontos=$pontos+1;
-                            $matriz[$linha][$total_questoes] = isset($matriz[$linha][$total_questoes]) ? $matriz[$linha][$total_questoes] : 0;
+                            $matriz[$linha][$total_questoes]=1;
                         }
                         else
                         {
@@ -512,7 +511,7 @@ else
                     $j=1;
                     $somamatriz=0;
                     do {
-                      $somamatriz = $somamatriz + (isset($matriz[$j][$i]) ? $matriz[$j][$i] : 0);
+                     $somamatriz=$somamatriz+$matriz[$j][$i];
                     } while($j++<=$linha);
                     
                   if ($value==$disciplinas[$i]){
@@ -532,7 +531,7 @@ else
                     $j=1;
                     $somamatriz=0;
                     do {
-                    $somamatriz = $somamatriz + (isset($matriz[$j][$i]) ? $matriz[$j][$i] : 0);
+                     $somamatriz=$somamatriz+$matriz[$j][$i];
                     } while($j++<=$linha);
                     if ($value==$disciplinas[$i]){
                     echo "<td>&nbsp;";
@@ -621,7 +620,7 @@ else
                     //echo "<tr><td><h4>Questão</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta do Aluno</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta Correta</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Situação</h4></td></tr>";
                     while ($dados=mysqli_fetch_array($data))
                     {
-                      $matriz[$linha][$total_questoes] = isset($matriz[$linha][$total_questoes]) ? $matriz[$linha][$total_questoes] : 0;
+                       $matriz[$linha][$total_questoes]=0;
                        if ($dados['Resposta_Aluno']==$dados['Resposta_Correta'])
                         {  
                           //echo "<td bgcolor=\"lightgreen\">&nbsp;";
@@ -630,7 +629,7 @@ else
                           //echo $dados['Resposta_Correta'];
                          
                             $pontos=$pontos+1;
-                            $matriz[$linha][$total_questoes] = isset($matriz[$linha][$total_questoes]) ? $matriz[$linha][$total_questoes] : 0;
+                            $matriz[$linha][$total_questoes]=1;
                         }
                         else
                         {
