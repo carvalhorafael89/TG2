@@ -148,7 +148,7 @@ if (isset($_COOKIE['Nivel']))
                         {  
                           echo "<td bgcolor=\"lightgreen\">&nbsp;";
                           echo $dados['Resposta_Aluno'];
-                          echo "&nbsp;</td>";
+                          echo " &nbsp;</td>";
                           //echo $dados['Resposta_Correta'];
                          
                             $pontos=$pontos+1;
