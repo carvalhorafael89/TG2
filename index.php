@@ -107,7 +107,7 @@
                 <?php if ($nivel == "Visitante") { // Mostra a mensagem de cadastro apenas para visitantes ?>
                     <h3>Ainda não tem um Login? Cadastre-se agora.</h3>
                     <div class="cta-btn">
-                        <a href="login.php" class="btn btn-theme btn-lg"> Cadastre-se <i class="fa fa-angle-right"></i></a>
+                        <a href="verifica.php" class="btn btn-theme btn-lg"> Cadastre-se <i class="fa fa-angle-right"></i></a>
                     </div>
                 <?php } ?>
             </div>

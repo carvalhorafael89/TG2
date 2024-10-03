@@ -121,7 +121,6 @@ echo '
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">';
   
-  // Aqui está a modificação, exibindo o menu "Alunos" apenas se o nível for de um aluno logado
   if ($nivel == "Aluno"){ // Exibe apenas se o nível for de um aluno logado
     echo '<li class="dropdown active">
     <a href="index.php" class="dropdown-toggle " data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false"> Aluno  <i class="fa fa-angle-down"></i></a>
@@ -181,7 +180,8 @@ echo '
 <li><a href="#">Perfil</a></li>';}
 
 if ($nivel == "Visitante") {
-    echo '<li><a href="login.php">LogIn</a>';
+    echo '<li><a href="login.php">Login</a>';
+    echo '<li><a href="verifica.php">Cadastre-se</a>';
 } else { 
     echo '<li><a href="sair.php">Sair</a></li>'; 
 }
