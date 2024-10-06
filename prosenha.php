@@ -1,6 +1,5 @@
 <?php
 
-// Inclui os arquivos diretamente da pasta do PHPMailer extraído
 require 'mailer/src/PHPMailer.php';
 require 'mailer/src/SMTP.php';
 require 'mailer/src/Exception.php';
@@ -8,11 +7,9 @@ require 'mailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Código de conexão ao banco e envio de e-mail
 require_once 'conecta.php';
 include 'cabecalho.php';
 
-// Envia a senha para o e-mail informado
 if (isset($_POST['email'])) {
     $email = $_POST['email'];
     
@@ -33,10 +30,10 @@ if (isset($_POST['email'])) {
         try {
             // Configurações do servidor SMTP
             $mail->isSMTP(); // Enviar via SMTP
-            $mail->Host = 'smtp.gmail.com'; // Servidor SMTP (ex: smtp.gmail.com para Gmail)
+            $mail->Host = 'smtp.gmail.com'; // Servidor SMTP do Gmail
             $mail->SMTPAuth = true; // Autenticação habilitada
             $mail->Username = 'phpmailercarvalho@gmail.com'; // Usuário SMTP (e-mail do remetente)
-            $mail->Password = 'dluw tvlv hvwb ckji'; // Senha SMTP
+            $mail->Password = 'dluw tvlv hvwb ckji'; // Senha SMTP criado pelo Google mail
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // TLS para criptografia
             $mail->Port = 587; // Porta TCP
 
