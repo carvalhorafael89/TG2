@@ -19,26 +19,16 @@ echo '<footer>
 				<div class="widget">
 					<h4>Informações</h4>
 					<ul class="link-list">
-						<li><a href="http://www.fatecsorocaba.edu.br/afatec.asp">A Fatec</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/campus.asp">Nosso Campus</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/nucleos.asp">Núcleos de Pesquisa</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/enade">ENADE</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/afatec.asp#janelacontato">Fale conosco</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/missao-visao-e-valores/">Missão, Visão e Valores</a></li>
+						<li><a href="hhttps://fatecitu.cps.sp.gov.br/cps-carreiras/">CPS Carreiras</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/infraestrutura/">Nossa Estrutura</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/comunicacao/revista-varvitu/">Revista V@rvitu</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/contato/">Fale conosco</a></li>
 					</ul>
 				</div>
 				
 			</div>
 			<div class="col-sm-3 col-lg-3">
-				<div class="widget">
-					<h4>Páginas Externas</h4>
-					<ul class="link-list">
-						<li><a href="http://www.fatecsorocaba.edu.br/iniciacao.asp">Iniciação Científica</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/csf.asp">Ciência sem fronteiras</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/exalunos.asp">Ex-Alunos</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/comochegar.asp">Como chegar</a></li>
-						<li><a href="http://www.fatecsorocaba.edu.br/biblioteca.asp">Biblioteca</a></li>
-					</ul>
-				</div>
 			</div>
 			<div class="col-sm-3 col-lg-3">
 				<div class="widget">

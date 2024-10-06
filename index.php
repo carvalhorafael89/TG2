@@ -85,10 +85,7 @@
                     <?php } else { // Mostra a seção original se o usuário não for professor ?>
                         <h2>Faça agora seu <span>simulado</span> on-line</h2>
                         <p><h3>Solicite ao professor o código da prova</h3></p>
-                        <a href="realiza.php" class="btn btn-theme btn-lg">Começar</a>
-                        
                         <?php if ($nivel == "Visitante") { // Mostra uma mensagem para visitantes ?>
-                            
                         <?php } ?>
                     <?php } ?>
                 </div>
