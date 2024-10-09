@@ -61,36 +61,39 @@ if (isset($_POST['email'])) {
 }
 ?>
 
-<!-- Código HTML permanece inalterado -->
+<!-- Estrutura HTML similar à da página de login -->
 <section id="inner-headline">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <ul class="breadcrumb">
-          <li><a href="#"><i class="fa fa-home"></i></a><i class="icon-angle-right"></i></li>
-          <li><a href="index.php">Home</a><i class="icon-angle-right"></i></li>
-          <li class="active">Lembrar a senha</li>
-        </ul>
-      </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-home"></i></a><i class="icon-angle-right"></i></li>
+                    <li><a href="index.php">Home</a><i class="icon-angle-right"></i></li>
+                    <li class="active">Recuperar Senha</li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 <section id="content">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-                <form role="form" class="register-form" method="POST" action="prosenha.php">
-                    <h2>Esqueceu a Senha: <small>Digite seu e-mail cadastrado</small></h2>
-                    <hr class="colorgraph">
+            <div class="col-xs-12 col-sm-8 col-md-6">
+                <form role="form" class="register-form" method="POST" action="esqsenha.php">
+                    <h2>Esqueceu sua Senha? <small>Digite seu e-mail cadastrado</small></h2>
+                    
                     <div class="form-group">
-                        <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Endereço de E-Mail" tabindex="4" required>
+                        <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Endereço de E-Mail" required>
                     </div>
-                    <div class="row">
+
+                    <div class="row mb-4">
                         <div class="col-xs-12 col-md-6">
-                            <input type="submit" value="Enviar Senha" class="btn btn-primary btn-block btn-lg" tabindex="6">
+                            <input type="submit" value="Enviar Senha" class="btn btn-primary btn-block btn-lg">
                         </div>
-                        <div class="col-xs-12 col-md-6">Não possui Acesso ? <a href="cadAluno.php">Cadastre-se aqui!</a></div>
+                        <div class="col-xs-12 col-md-6">
+                            <p>Não possui acesso? <a href="cadAluno.php">Cadastre-se aqui!</a></p>
+                        </div>
                     </div>
                 </form>
             </div>
