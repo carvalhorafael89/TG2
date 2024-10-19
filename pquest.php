@@ -1,71 +1,35 @@
 <?php
-if (!isset($_COOKIE['Nivel']))
-{
-    
-        $voltar="login.php?acesso=denied";
-        header("Location: $voltar");
-}  
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-header('Content-Type: text/html; charset=utf-8');
 require_once 'conecta.php';
 
+// Verifique se os dados foram enviados corretamente
+if (isset($_POST['codigo_prova'], $_POST['codigo_aluno'], $_POST['numero'], $_POST['resposta'])) {
+    $codigo_prova = $_POST['codigo_prova'];
+    $codigo_aluno = $_POST['codigo_aluno'];
+    $numero = $_POST['numero'];
+    $resposta = $_POST['resposta'];
 
-if (isset($_POST['codigo_prova']))
-{
-    if (isset($_POST['codigo_aluno']))
-    {
-        if (isset($_POST['numero']))
-        {
-        
-            
-                $codigo_prova=$_POST['codigo_prova'];
-                $codigo_aluno=$_POST['codigo_aluno'];
-                $numero=$_POST['numero'];
-             if (isset($_POST['resposta']))
-               {
-                $resposta=$_POST['resposta'];
-                }
-          else
-            {
-              $resposta="Z";
-              }
-                $sql= "UPDATE gabaritos SET Resposta_Aluno='".$resposta."' WHERE Numero=".$numero." and Aluno=".$codigo_aluno." and Prova='".$codigo_prova."'";
-                //echo $sql;
-                
-                   //echo $sql;
-                   //mysqli_query($con, "insert into cursos (curso) values ('Eletr. Automotiva')");
-                   mysqli_query($con, $sql);
-                   
-                   $voltar="comeca.php?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."&numero=".$numero;
-                header("Location: $voltar");
-                
-            }
-          else
-          {
-                $voltar="comeca.php?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."&numero=".$numero;
-                header("Location: $voltar");
-          }
+    // Atualiza a resposta do aluno na questão atual
+    $sql = "UPDATE gabaritos SET Resposta_Aluno = ? WHERE Aluno = ? AND Prova = ? AND Numero = ?";
+    if ($stmt = $con->prepare($sql)) {
+        $stmt->bind_param('sisi', $resposta, $codigo_aluno, $codigo_prova, $numero);
+        $stmt->execute();
+        $stmt->close();
+
+        // Verifica se foi solicitado finalizar a prova
+        if (isset($_POST['finaliza_prova'])) {
+            // Redireciona para a página de finalização da prova
+            header("Location: finalprv.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno");
+            exit();
+        } else {
+            // Redireciona para a próxima questão
+            $proxima_questao = $numero + 1;
+            header("Location: comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno&numero=$proxima_questao");
+            exit();
         }
-      else
-          {
-                $voltar="comeca.php?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."&numero=".$numero;
-                header("Location: $voltar");
-          }
-        
-    
-    
-    
-    
+    } else {
+        echo "Erro ao preparar a consulta.";
+    }
+} else {
+    echo "Dados inválidos. Tente novamente.";
 }
-  else
-          {
-                $voltar="comeca.php?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."&numero=".$numero;
-                header("Location: $voltar");
-          }
 ?>
-Processando gravação...
-Sua conexão com a Internet apresenta-se muito lenta. Tente retornar para a página anterior e pressionar F5 (Atualizar)

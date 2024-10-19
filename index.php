@@ -191,11 +191,11 @@
       <div class="col-lg-12">
         <div class="row">
           <div class="col-sm-6 col-lg-6">
-            <h3>Sobre a FATEC Itu</h3>
+            <h3><span class="highlight">Sobre a FATEC Itu</span></h3>
             <h4><p><strong>Missão, Visão e Valores da Fatec Itu:</p></h4>
-              <p>Missão:</strong> Oferecer educação superior profissional tecnológica de qualidade, através da formação de tecnólogos competentes, socialmente responsáveis, éticos e capazes de promover a ampliação e reprodução dos conhecimentos tecnológicos por meio de ações produtivas que privilegiem as demandas da sociedade em prol de uma melhoria de qualidade de vide da sociedade brasileira.</p>
-              <p><strong>Visão: </strong>Ser uma instituição de excelência na educação superior tecnológica, reconhecida por prestar serviços de qualidade, relevância e ética, priorizando a sustentabilidade no meio onde está inserida e a inclusão social, sendo agente de desenvolvimento e transformação da sociedade.</p>
-              <p><strong>Valores: </strong>Excelência e comprometimento com a educação superior tecnológica de qualidade; desenvolvimento de uma consciência crítica; Inovação e criatividade precedidas pela ética, que levam a construção e socialização do conhecimento e a consequente transformação do meio onde está inserida.</p>
+              <p><span class="highlight">Missão:</span></strong> Oferecer educação superior profissional tecnológica de qualidade, através da formação de tecnólogos competentes, socialmente responsáveis, éticos e capazes de promover a ampliação e reprodução dos conhecimentos tecnológicos por meio de ações produtivas que privilegiem as demandas da sociedade em prol de uma melhoria de qualidade de vide da sociedade brasileira.</p>
+              <p><strong><span class="highlight">Visão: </span></strong>Ser uma instituição de excelência na educação superior tecnológica, reconhecida por prestar serviços de qualidade, relevância e ética, priorizando a sustentabilidade no meio onde está inserida e a inclusão social, sendo agente de desenvolvimento e transformação da sociedade.</p>
+              <p><strong><span class="highlight">Visão: </span></strong>Excelência e comprometimento com a educação superior tecnológica de qualidade; desenvolvimento de uma consciência crítica; Inovação e criatividade precedidas pela ética, que levam a construção e socialização do conhecimento e a consequente transformação do meio onde está inserida.</p>
               <p>São os princípios que moldam a Fatec Itu e orientam nossas ações diárias em direção a uma educação superior tecnológica de excelência, com impacto real na sociedade.</p>
             </p>
           </div>

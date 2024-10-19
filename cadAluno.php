@@ -40,14 +40,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $curso = $_POST['curso'];
                 $semestre = $_POST['semestre'];
                 $ano = $_POST['ano'];
-
+        
                 // Verificação de senha (pura em PHP)
                 if ($senha !== $confirma_senha) {
                     echo "<p style='color:red; font-weight:bold;'>As senhas não coincidem. Tente novamente.</p>";
                 } else {
-                    // Aqui você pode inserir o código para salvar os dados no banco de dados
-                    echo "<p style='color:green;'>Cadastro realizado com sucesso!</p>";
-                    // Coloque aqui a sua lógica de inserção no banco de dados.
+                    // Query de inserção no banco de dados
+                    $sql_insert = "INSERT INTO cadastro_alunos (Nome, Senha, RA, CPF, Curso, EMail, Semestre, Ano) 
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+                    // Preparando a query
+                    if ($stmt = $con->prepare($sql_insert)) {
+                        // Bind dos parâmetros
+                        $stmt->bind_param("ssssssis", $nome, $senha, $ra, $cpf, $curso, $email, $semestre, $ano);
+        
+                        // Executando a query
+                        if ($stmt->execute()) {
+                            // Sucesso no cadastro, redireciona para a página de login
+                            echo "<script>
+                                alert('Cadastro realizado com sucesso!');
+                                window.location.href = 'login.php';
+                            </script>";
+                        } else {
+                            // Exibe erro caso não consiga realizar o cadastro
+                            echo "<p style='color:red;'>Erro ao realizar o cadastro. Tente novamente.</p>";
+                        }
+        
+                        // Fechando o statement
+                        $stmt->close();
+                    } else {
+                        // Exibe erro de preparação de query
+                        echo "<p style='color:red;'>Erro na preparação da query. Tente novamente.</p>";
+                    }
                 }
             }
         }
