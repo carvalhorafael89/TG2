@@ -15,6 +15,52 @@ if (isset($_COOKIE['Nivel'])) {
     $Email = $_COOKIE['Email'];
     $codigo = $_COOKIE['Codigo'];
     $codigo_aluno = $codigo;
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $codigo_prova = $_POST['codigo_prova'];
+
+        // Verifica se o código da prova existe no banco de dados
+        $sql_verifica_prova = "SELECT * FROM cadastro_provas WHERE Codigo_prova = ?";
+        if ($stmt_prova = $con->prepare($sql_verifica_prova)) {
+            $stmt_prova->bind_param("s", $codigo_prova);
+            $stmt_prova->execute();
+            $stmt_prova->store_result();
+
+            if ($stmt_prova->num_rows > 0) {
+                // Se a prova existir, verifica se o aluno já realizou a prova
+                $sql_verifica = "SELECT * FROM gabaritos WHERE Aluno = ? AND Prova = ? AND Finalizado = 'Sim'";
+                if ($stmt = $con->prepare($sql_verifica)) {
+                    $stmt->bind_param("is", $codigo_aluno, $codigo_prova);
+                    $stmt->execute();
+                    $stmt->store_result();
+                    
+                    if ($stmt->num_rows > 0) {
+                        // Prova já realizada - redireciona para verprova.php
+                        header("Location: veprova.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno");
+                        exit();
+                    } else {
+                        // Prova não realizada - redireciona para comeca.php
+                        header("Location: comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno");
+                        exit();
+                    }
+
+                    $stmt->close();
+                } else {
+                    echo "<p style='color:red;'>Erro na preparação da verificação da prova. Tente novamente.</p>";
+                }
+            } else {
+                // Se a prova não existir, exibe mensagem de erro
+                echo "<script>
+                    alert('Código da prova inválido. Tente novamente.');
+                    window.location.href = 'realiza.php';
+                </script>";
+            }
+
+            $stmt_prova->close();
+        } else {
+            echo "<p style='color:red;'>Erro na preparação da consulta do código da prova. Tente novamente.</p>";
+        }
+    }
 ?>
 
 <!-- end header -->
@@ -36,18 +82,10 @@ if (isset($_COOKIE['Nivel'])) {
     <div class="container">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-0">
-                <form role="form" class="register-form" method="POST" action="fazprova.php">
-                    <h2>Seleção de Prova: <small>Escolha o código da prova que deseja realizar.</small></h2>
+                <form role="form" class="register-form" method="POST" action="realiza.php">
+                    <h2>Seleção de Prova: <small>Insira o código da prova que deseja realizar.</small></h2>
                     <div class="form-group">
-                        <select name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Código da Prova" tabindex="4">
-                            <?php
-                            $sql = "SELECT * from cadastro_provas";
-                            $data = mysqli_query($con, $sql);
-                            while ($dados = mysqli_fetch_array($data)) {
-                                echo "<option>" . $dados['Codigo_prova'] . "</option>";
-                            }
-                            ?>
-                        </select>
+                        <input type="text" name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Código da Prova" required>
                         <input type="hidden" name="codigo_aluno" value="<?php echo $codigo_aluno; ?>">
                     </div>
                     <div class="row">

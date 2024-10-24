@@ -1,6 +1,10 @@
 <?php
+// Verificar se a sessão já foi iniciada antes de chamar session_start()
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Definindo o nível padrão como "Visitante"
+// Definir o nível padrão como "Visitante"
 $nivel = "Visitante";
 
 // Verifica se os cookies estão definidos
@@ -14,13 +18,22 @@ if (isset($_COOKIE['Nivel']) && isset($_COOKIE['Nome']) && isset($_COOKIE['Email
     $nome = "Visitante";
 }
 
+// Verifica se o modo aluno está ativo
+$modo_aluno = isset($_SESSION['modo']) && $_SESSION['modo'] === 'aluno';
+
+// Alterar o estilo da barra superior se o modo aluno estiver ativo
+$top_bar_style = $modo_aluno ? "background-image: linear-gradient(45deg, yellow 25%, black 25%, black 50%, yellow 50%, yellow 75%, black 75%, black); background-size: 20px 20px; padding: 20px 10px; color: black; font-weight: bold;" : "";
+
+// Teste para verificar o modo
+echo 'Modo atual: ' . (isset($_SESSION['modo']) ? $_SESSION['modo'] : 'não definido');
+
 echo '
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Sistema para a realização de simulados e provas on-lineplate" />
+    <meta name="description" content="Sistema para a realização de simulados e provas on-line" />
     <title>Sistema para a realização de simulados e provas on-line</title>
     <meta name="author" content="Renato Luiz Cardoso, professor" />
 
@@ -53,18 +66,26 @@ echo '
 <div id="wrapper">
   <!-- start header -->
   <header>
-  <div class="top">
+  <div class="top" style="' . $top_bar_style . '">
     <div class="container">
       <div class="row">
         <div class="col-md-6">
           <ul class="topleft-info">
             <li><i class=""></i>';
 
-if ($nivel !== "Visitante") {
-    echo 'Olá,&nbsp;&nbsp;' . $nome . '</li>';
-} else {
-    echo 'Olá,&nbsp;&nbsp;bem-vindo(a)</li>';
-}
+            if ($nivel !== "Visitante") {
+              echo 'Olá,&nbsp;&nbsp;' . $nome;
+          
+              // Verifica se o modo aluno está ativo e exibe a indicação
+              if ($modo_aluno) {
+                  echo '&nbsp;&nbsp;<span style="color: red; font-weight: bold;">(Modo Aluno Ativo)</span>';
+              }
+          
+              echo '</li>';
+          } else {
+              echo 'Olá,&nbsp;&nbsp;bem-vindo(a)</li>';
+          }
+          
 
 echo '
           </ul>
@@ -95,8 +116,18 @@ echo '
         <div class="navbar-collapse collapse ">
             <ul class="nav navbar-nav">';
 
+// Adicionar botão para alternar entre modo aluno e professor, apenas para professores
+if ($nivel == "Professor") {
+    echo '<li>
+        <form method="GET" action="mudar_modo.php" style="display: inline;">
+            <input type="hidden" name="modo" value="' . ($modo_aluno ? 'professor' : 'aluno') . '">
+            <button type="submit" class="btn btn-link" style="padding: 14px; font-size: 16px;">' . ($modo_aluno ? 'Sair do Modo Aluno' : 'Entrar no Modo Aluno') . '</button>
+        </form>
+    </li>';
+}
+
 // Menu de navegação com base no nível de acesso
-if ($nivel == "Aluno") {
+if ($nivel == "Aluno" || $modo_aluno) {
     echo '<li class="dropdown active">
     <a href="index.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Aluno <i class="fa fa-angle-down"></i></a>
     <ul class="dropdown-menu">
@@ -123,7 +154,7 @@ if ($nivel == "Aluno") {
               <li><a href="cadprova.php">Criar nova prova ou simulado</a></li>
               <li><a href="altprova.php">Alterar prova ou simulado</a></li>
               <li><a href="altprova.php">Excluir prova ou simulado</a></li>
-              <li><a href="realiza2.php">Testar prova ou simulado</a></li>
+              <li><a href="realiza.php">Testar prova ou simulado</a></li>
               <li><a href="rel6.php">Encerra todas as provas em andamento</a></li>
           </ul>  
         </li>
@@ -165,4 +196,3 @@ echo ' </ul>
 </header>
 ';
 ?>
-<!-- Fim do cabeçalho -->
