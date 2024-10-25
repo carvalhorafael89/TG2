@@ -18,14 +18,24 @@ if (isset($_COOKIE['Nivel']) && isset($_COOKIE['Nome']) && isset($_COOKIE['Email
     $nome = "Visitante";
 }
 
+// Inicialmente, o modo não deve ser aluno ou professor se for visitante ou aluno
+if ($nivel === "Professor" && !isset($_SESSION['modo'])) {
+    $_SESSION['modo'] = 'professor'; // Define modo professor se o usuário for professor e estiver logado
+}
+
 // Verifica se o modo aluno está ativo
 $modo_aluno = isset($_SESSION['modo']) && $_SESSION['modo'] === 'aluno';
 
 // Alterar o estilo da barra superior se o modo aluno estiver ativo
-$top_bar_style = $modo_aluno ? "background-image: linear-gradient(45deg, yellow 25%, black 25%, black 50%, yellow 50%, yellow 75%, black 75%, black); background-size: 20px 20px; padding: 20px 10px; color: black; font-weight: bold;" : "";
+$top_bar_style = $modo_aluno ? "background-image: linear-gradient(45deg, yellow 25%, black 25%, black 50%, yellow 50%, yellow 75%, black 75%, black); background-size: 20px 20px; padding: 20px 10px; color: black; font-weight: bold; background-clip: padding-box; position: relative; z-index: 1;" : "";
+
+// Estilização do botão faixa de segurança
+$button_style = "background-image: linear-gradient(45deg, yellow 25%, black 25%, black 50%, yellow 50%, yellow 75%, black 75%, black); background-size: 20px 20px; color: black; font-weight: bold; padding: 5px 10px; border: none; cursor: pointer; border-radius: 10px; font-size: 12px; background-color: yellow; background-clip: padding-box;";
+
+
 
 // Teste para verificar o modo
-echo 'Modo atual: ' . (isset($_SESSION['modo']) ? $_SESSION['modo'] : 'não definido');
+//echo 'Modo atual: ' . (isset($_SESSION['modo']) ? $_SESSION['modo'] : 'não definido');
 
 echo '
 <!DOCTYPE html>
@@ -58,6 +68,9 @@ echo '
     <style type="text/css">
         li { list-style: none; }
         ul { list-style: none; }
+        .faixa-botao {
+            ' . $button_style . '
+        }
     </style>
 </head>
 
@@ -74,11 +87,14 @@ echo '
             <li><i class=""></i>';
 
             if ($nivel !== "Visitante") {
-              echo 'Olá,&nbsp;&nbsp;' . $nome;
+              
           
               // Verifica se o modo aluno está ativo e exibe a indicação
               if ($modo_aluno) {
-                  echo '&nbsp;&nbsp;<span style="color: red; font-weight: bold;">(Modo Aluno Ativo)</span>';
+                echo '<span style=background-color:yellow;>Olá,&nbsp;&nbsp;' . $nome;
+                echo '&nbsp;&nbsp;<span style="color: red; background-color: yellow; font-weight: bold;">(Modo Aluno Ativo)</span>';
+              }else{
+                echo 'Olá,&nbsp;&nbsp;' . $nome;
               }
           
               echo '</li>';
@@ -118,13 +134,17 @@ echo '
 
 // Adicionar botão para alternar entre modo aluno e professor, apenas para professores
 if ($nivel == "Professor") {
-    echo '<li>
-        <form method="GET" action="mudar_modo.php" style="display: inline;">
-            <input type="hidden" name="modo" value="' . ($modo_aluno ? 'professor' : 'aluno') . '">
-            <button type="submit" class="btn btn-link" style="padding: 14px; font-size: 16px;">' . ($modo_aluno ? 'Sair do Modo Aluno' : 'Entrar no Modo Aluno') . '</button>
-        </form>
-    </li>';
+  echo '<li>
+      <form method="GET" action="mudar_modo.php" style="display: inline;">
+          <input type="hidden" name="modo" value="' . ($modo_aluno ? 'professor' : 'aluno') . '">
+          <button type="submit" class="faixa-botao">
+              <span style="background-color: yellow; padding: 2px 5px; border-radius: 5px;">' . ($modo_aluno ? 'Sair do Modo Aluno' : 'Entrar no Modo Aluno') . '</span>
+          </button>
+      </form>
+  </li>';
 }
+
+
 
 // Menu de navegação com base no nível de acesso
 if ($nivel == "Aluno" || $modo_aluno) {
