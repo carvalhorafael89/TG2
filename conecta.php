@@ -9,7 +9,7 @@
   
 $servidor="localhost";
 $udb="root";
-$senha="@bodieles89";
+$senha="usbw";
 $bdados="tg2";
 
 /*

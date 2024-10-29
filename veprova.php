@@ -25,7 +25,7 @@ if (isset($_COOKIE['Nivel'])) {
                 <ul class="breadcrumb">
                     <li><a href="index.php"><i class="fa fa-home"></i></a><i class="icon-angle-right"></i></li>
                     <li><a href="index.php">Alunos</a><i class="icon-angle-right"></i></li>
-                    <li class="active">Verificar Prova/Simulados</li>
+                    <li class="active">Verificar Prova / Simulados</li>
                 </ul>
             </div>
         </div>

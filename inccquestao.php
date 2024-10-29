@@ -6,6 +6,8 @@ if (!isset($_COOKIE['Nivel'])) {
     exit();
 }
 
+$button_style = "background-color: red; color: white; font-weight: bold; margin-top: 8px; padding: 4px 10px; border: none; cursor: pointer;";
+
 // Ativa o bloco que conecta ao banco de dados
 require_once 'conecta.php';
 
@@ -40,14 +42,14 @@ if (isset($_COOKIE['Nivel'])) {
             $stmt_max->fetch();
             $stmt_max->close();
 
-            // Verifica se o limite foi atingido ou ultrapassado
-            if ($total_questoes_prova >= $total_max_questoes) {
-                // Redireciona com erro se o limite foi atingido, mas com uma verificação se o erro já foi mostrado
-                if (!isset($_GET['erro']) || $_GET['erro'] !== 'limite') {
-                    header("Location: inccquestao.php?prova=$codigo_prova&erro=limite");
-                    exit();
-                }
-            }
+            // Verifica se o limite de questões foi atingido
+if ($total_questoes_prova >= $total_max_questoes) {
+    // Exibe uma mensagem de erro se o limite foi atingido, sem bloquear a visualização das questões
+    if (!isset($_GET['erro']) || $_GET['erro'] !== 'limite') {
+        header("Location: inccquestao.php?prova=$codigo_prova&erro=limite");
+        exit();
+    }
+}
         }
 
         // Se houver POST (submissão de questões)
@@ -169,7 +171,7 @@ include 'cabecalho.php';
                         $stmt_incluidas->execute();
                         $result_incluidas = $stmt_incluidas->get_result();
                         while ($row = $result_incluidas->fetch_assoc()) {
-                            $questoes_incluidas[] = $row['Questao']; // Armazena as questões já incluídas
+                            $questoes_incluidas[] = $row['Questao'];
                         }
                         $stmt_incluidas->close();
                     }
@@ -238,25 +240,37 @@ include 'cabecalho.php';
                     }
                     echo "<br><br>";
 
-                    // Exibição das questões em formato de lista com checkboxes
-                    echo "<form method=\"POST\" action=\"inccquestao.php\">";
-                    echo "<div style='display: flex;'>";
+// Exibição das questões em formato de lista com checkboxes
+echo "<form method=\"POST\" action=\"inccquestao.php\">";
+echo "<div style='display: flex;'>";
 
-                    // Lista de questões à esquerda
-                    echo "<div style='width: 30%;'>";
-                    echo "<ul>";
-                    $sql .= " LIMIT $qi, $por_pagina";
-                    $r = mysqli_query($con, $sql);
-                    while ($dados = mysqli_fetch_array($r)) {
-                        $highlight_class = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? "highlight" : "";
-                        $checked = in_array($dados['Codigo'], $questoes_incluidas) ? "checked" : ""; // Marca as questões já incluídas
-                        echo "<li><span class=\"$highlight_class\">";
-                        echo "<input type=\"checkbox\" name=\"questoes[]\" value=\"" . $dados['Codigo'] . "\" $checked> ";
-                        echo "<a href=\"inccquestao.php?prova=$codigo_prova&codigo=" . $dados['Codigo'] . "&por_pagina=$por_pagina&qi=$qi&disciplina=$disciplina&professor=$professor\">Questão " . $dados['Codigo'] . "</a>";
-                        echo "</span></li>";
-                    }
-                    echo "</ul>";
-                    echo "</div>";
+// Lista de questões à esquerda
+echo "<div style='width: 30%;'>";
+echo "<ul>";
+$sql .= " LIMIT $qi, $por_pagina";
+$r = mysqli_query($con, $sql);
+while ($dados = mysqli_fetch_array($r)) {
+    $highlight_class = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? "highlight" : "";
+    $checked = in_array($dados['Codigo'], $questoes_incluidas) ? "checked" : ""; // Marca as questões já incluídas
+    
+    // Define o estilo condicional para o botão "Ver Questão" quando a questão está selecionada
+    $button_style_conditional = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? $button_style : "";
+
+    echo "<li><span class=\"$highlight_class\">";
+    echo "<input type=\"checkbox\" name=\"questoes[]\" value=\"" . $dados['Codigo'] . "\" $checked> ";
+    
+    // Botão "Ver Questão" com estilo condicional e número da questão
+    echo "<a href=\"inccquestao.php?prova=$codigo_prova&codigo=" . $dados['Codigo'] . "&por_pagina=$por_pagina&qi=$qi&disciplina=$disciplina&professor=$professor\" style='$button_style_conditional; margin-right: 10px;'>Questão " . $dados['Codigo'] . "</a>";
+    
+    // Botão "Alterar" aparece apenas se a questão está selecionada
+    if (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) {
+        echo "<a href=\"altquestao.php?codigo=" . $dados['Codigo'] . "&prova=" . $codigo_prova . "\" style='$button_style_conditional;'>Alterar</a>";
+    }
+
+    echo "</span></li>";
+}
+echo "</ul>";
+echo "</div>";
 
                     // Área de visualização da questão à direita
                     echo "<div style='width: 70%; padding-left: 20px;'>";

@@ -1,4 +1,7 @@
 <?php
+// Iniciar o buffer de saída para evitar problemas com header() mais tarde
+ob_start();
+
 // Iniciar sessão para verificar o modo
 session_start();
 
@@ -7,7 +10,6 @@ $modo_aluno = isset($_SESSION['modo']) && $_SESSION['modo'] === 'aluno';
 
 // Verificar se os cookies já estão definidos, se não, redirecionar para login
 if (!isset($_COOKIE['Nome']) || !isset($_COOKIE['Email']) || !isset($_COOKIE['Codigo'])) {
-    // Redireciona para a página de login se os cookies não existirem
     header("Location: login.php?acesso=denied");
     exit();
 }
@@ -32,9 +34,30 @@ if ($modo_aluno || $nivel === 'Aluno') {
 
 // Ativa o bloco que conecta ao banco de dados
 require_once 'conecta.php';
-
 include 'cabecalho.php';
 
+// Variável para armazenar a mensagem de erro
+$erro_codigo = "";
+
+// Verifica se o formulário foi enviado
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $codigo_prova = $_POST['codigo_prova'];
+
+    // Verificar se o código da prova existe no banco de dados
+    $sql = "SELECT * FROM cadastro_provas WHERE Codigo_prova = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("s", $codigo_prova);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Se o código da prova não existir, define a mensagem de erro
+    if ($result->num_rows === 0) {
+        $erro_codigo = "Código da prova inválido. Verifique com seu professor.";
+    } else {
+        header("Location: fazprova.php?codigo_prova=" . urlencode($codigo_prova) . "&codigo_aluno=" . urlencode($codigo_aluno));
+        exit();
+    }
+}
 ?>
 <!-- end header -->
 <section id="inner-headline">
@@ -55,30 +78,23 @@ include 'cabecalho.php';
 <div class="container">
   <div class="row">
     <div class="col-xs-12 col-sm-8 col-md-7 col-sm-offset-2 col-md-offset-0">
-        <form role="form" class="register-form" method="POST" action="fazprova.php">
+        <form role="form" class="register-form" method="POST" action="">
       <h2>Atenção: <small>Você está logado como <?php echo $modo_aluno ? 'Professor (Modo Aluno)' : 'Aluno'; ?> "<strong><?php echo $nome; ?></strong>"<br>
       <?php
       if ($modo_aluno) {
           echo 'Para voltar ao modo professor, clique em <a href="mudar_modo.php?modo=professor">Sair do Modo Aluno</a>.';
-      } else {
-          echo 'Para utilizar as opções de professor, clique em sair e acesse novamente.';
       }
       ?>
       </small></h2>
 
       <div class="form-group">
-        <select name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Código da Prova" tabindex="4">
-          <?php
-            // Obter todas as provas disponíveis no banco de dados
-            $sql = "SELECT * FROM cadastro_provas";
-            $data = mysqli_query($con, $sql);
-            while ($dados = mysqli_fetch_array($data)) {
-                echo "<option>";
-                echo $dados['Codigo_prova'];
-                echo "</option>";
-            }
-          ?>
-        </select>
+        <!-- Campo para inserção manual do código da prova -->
+        <label for="codigo_prova">Digite abaixo o código que você recebeu de seu professor</label>
+        <input type="text" name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Digite o Código da Prova" required tabindex="4">
+        
+        <?php if ($erro_codigo): ?>
+            <p style="color: red;"><?php echo $erro_codigo; ?></p>
+        <?php endif; ?>
 
         <input type="hidden" name="codigo_aluno" value="<?php echo $codigo_aluno; ?>">
       </div>
@@ -95,4 +111,5 @@ include 'cabecalho.php';
 </section>
 <?php
 include 'footer.php';
+ob_end_flush(); // Finalizar e enviar o buffer de saída
 ?>

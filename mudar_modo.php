@@ -12,6 +12,6 @@ if (isset($_GET['modo'])) {
 }
 
 // Redireciona de volta para a página principal
-header("Location: realiza.php");
+header("Location: index.php");
 exit();
 ?>

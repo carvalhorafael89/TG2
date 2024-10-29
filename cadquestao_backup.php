@@ -147,4 +147,4 @@ if (isset($_COOKIE['Nivel']))
 <?php
                   include 'footer.php';
     
-            ?> 
+            ?>  

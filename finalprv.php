@@ -1,104 +1,78 @@
 <?php
-if (!isset($_COOKIE['Nivel']))
-{
-    
-        $voltar="login.php?acesso=denied";
-        header("Location: $voltar");
-}  
-// Ativa o bloco que conecta ao banco de dados
-require_once 'conecta.php';
-include 'cabecalho.php';
-
-if (isset($_COOKIE['Nivel']))
-{
-    
-    $nivel =$_COOKIE['Nivel'];
-    $nome  =$_COOKIE['Nome'];
-    $Email =$_COOKIE['Email'];
-    $codigo=$_COOKIE['Codigo'];
-    $codigo_aluno=$codigo;
-                    
-
-?>
-<!-- end header -->
-  <section id="inner-headline">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <ul class="breadcrumb">
-          <li><a href="index.php"><i class="fa fa-home"></i></a><i class="icon-angle-right"></i></li>
-          <li><a href="index.php">Alunos</a><i class="icon-angle-right"></i></li>
-          <li class="active">Realizar Prova/Simulados</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  </section>
-        
-<section id="content">
-<div class="container">
-<div class="row">
-  <div class="col-lg-12">
-<?php
-
-                if (isset($_GET['codigo_prova']))
-                {
-                    if (isset($_GET['codigo_aluno']))  
-                    {
-                    $codigo_prova=$_GET['codigo_prova'];
-                    $codigo_aluno=$_GET['codigo_aluno'];
-                                    
-                    $total_questoes=0;
-                    $pontos=0;
-                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and Prova='".$codigo_prova."'";
-                    $data=mysqli_query($con,$sql);
-                    echo "<table>";
-                    echo "<tr><td><h4>Questão</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta do Aluno</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta Correta</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Situação</h4></td></tr>";
-                    while ($dados=mysqli_fetch_array($data))
-                    {
-                        echo "<tr><td><h4>";
-                        echo $dados['Numero'];
-                        echo "</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>";
-                        echo $dados['Resposta_Aluno'];
-                        echo "</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>";
-                        echo $dados['Resposta_Correta'];
-                        echo "</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>";
-                        if ($dados['Resposta_Aluno']==$dados['Resposta_Correta'])
-                        {
-                            echo "<font color=green>Correta</font>";
-                            $pontos=$pontos+1;
-                        }
-                        else
-                        {
-                            echo "<font color=red>Incorreta</font>";
-                        }
-                        echo "</h4></td></tr>";
-                       $total_questoes=$total_questoes+1;
-                    }
-                    
-                    echo "</table>";
-                    echo "<H2>Total de acertos: ".$pontos;
-                    $nota=$pontos/$total_questoes*10;
-                    echo "</h2><h2>Nota (0 a 10): ";
-                      echo round($nota,2);
-                      echo "</h2>";
-                    $sql= "UPDATE gabaritos SET Finalizado='Sim' WHERE Aluno=".$codigo_aluno." and Prova='".$codigo_prova."'";
-                //echo $sql;
-                
-                   //echo $sql;
-                   //mysqli_query($con, "insert into cursos (curso) values ('Eletr. Automotiva')");
-                   mysqli_query($con, $sql);
-                    }
-                }
-                
-}
-else
-{
-    $voltar="login.php";
+if (!isset($_COOKIE['Nivel'])) {
+    $voltar = "login.php?acesso=denied";
     header("Location: $voltar");
+    exit();
 }
+
+require_once 'conecta.php';
+
+ob_start();
+include 'cabecalho.php';
+ob_end_clean();
+
+$nivel = $_COOKIE['Nivel'];
+$codigo_aluno = $_COOKIE['Codigo'];
+
+if (isset($_POST['codigo_prova']) && isset($_POST['codigo_aluno'])) {
+  $codigo_prova = $_POST['codigo_prova'];
+  $codigo_aluno = $_POST['codigo_aluno'];
+
+  // Verificar se a prova já foi finalizada pelo aluno
+  $sql_verifica_finalizado = "SELECT Finalizado FROM gabaritos WHERE Aluno = $codigo_aluno AND Prova = '$codigo_prova' LIMIT 1";
+  $resultado_finalizado = mysqli_query($con, $sql_verifica_finalizado);
+  
+  if (!$resultado_finalizado) {
+      die("Erro na consulta: " . mysqli_error($con));
+  }
+
+  $dados_finalizado = mysqli_fetch_assoc($resultado_finalizado);
+
+  if ($dados_finalizado && $dados_finalizado['Finalizado'] === 'Sim') {
+      echo "<p style='color: red;'>Esta prova já foi finalizada e não pode ser alterada.</p>";
+      echo "<p><a href='index.php'>Voltar à página inicial</a></p>";
+  } else {
+      $total_questoes = 0;
+      $pontos = 0;
+
+      $sql = "SELECT * FROM gabaritos WHERE Aluno = $codigo_aluno AND Prova = '$codigo_prova'";
+      $data = mysqli_query($con, $sql);
+
+      echo "<table>";
+      echo "<tr><td><h4>Questão</h4></td><td><h4>Resposta do Aluno</h4></td><td><h4>Resposta Correta</h4></td><td><h4>Situação</h4></td></tr>";
+      while ($dados = mysqli_fetch_array($data)) {
+          echo "<tr><td><h4>{$dados['Questao']}</h4></td><td><h4>{$dados['Resposta_Aluno']}</h4></td><td><h4>{$dados['Resposta_Correta']}</h4></td><td><h4>";
+          if ($dados['Resposta_Aluno'] == $dados['Resposta_Correta']) {
+              echo "<font color='green'>Correta</font>";
+              $pontos++;
+          } else {
+              echo "<font color='red'>Incorreta</font>";
+          }
+          echo "</h4></td></tr>";
+          $total_questoes++;
+      }
+
+      echo "</table>";
+      echo "<h2>Total de acertos: $pontos</h2>";
+      $nota = ($pontos / $total_questoes) * 10;
+      echo "<h2>Nota (0 a 10): " . round($nota, 2) . "</h2>";
+
+      // Atualizar o status para "Finalizado"
+      $sql_update = "UPDATE gabaritos SET Finalizado = 'Sim' WHERE Aluno = $codigo_aluno AND Prova = '$codigo_prova'";
+      if (!mysqli_query($con, $sql_update)) {
+          die("Erro ao atualizar status de finalização: " . mysqli_error($con));
+      } else {
+          echo "<p>Status de finalização atualizado com sucesso!</p>";
+      }
+  }
+} else {
+  $voltar = "index.php";
+  header("Location: $voltar");
+  exit();
+}
+
 ?>
- </div>
+</div>
 </div>
 </div>
 </section>
