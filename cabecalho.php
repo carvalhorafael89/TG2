@@ -165,7 +165,7 @@ if ($nivel == "Aluno" || $modo_aluno) {
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Questões</a>
           <ul class="dropdown-menu">
               <li><a href="cadquestao.php">Incluir</a></li>
-              <li><a href="altprova.php">Alterar</a></li>
+              <li><a href="inccquestao.php">Alterar</a></li>
               <li><a href="#">Excluir</a></li>
           </ul>  
         </li>

@@ -20,19 +20,22 @@ $email = $_COOKIE['Email'];
 $codigo = $_COOKIE['Codigo'];
 $nivel = $_COOKIE['Nivel'];
 
-// Se o nível for "Professor" e não estiver no modo aluno, bloqueie o acesso
+// Se o nível for "Professor" e não estiver no modo aluno, ative automaticamente o Modo Aluno
 if ($nivel == 'Professor' && !$modo_aluno) {
-    echo "<p style='color: red;'>Professores não podem realizar provas ou simulados a menos que ativem o Modo Aluno.</p>";
-    echo "<p><a href='index.php'>Voltar à página inicial</a></p>";
-    exit();
+  $_SESSION['modo'] = 'aluno';
+  $modo_aluno = true;
+  $codigo_aluno = 0; // código genérico "0" para o modo aluno do professor
 }
 
 // Definir o código do aluno com base no modo
-if ($modo_aluno || $nivel === 'Aluno') {
+if ($nivel === 'Aluno') {
     $codigo_aluno = $codigo;
+} elseif ($modo_aluno && $nivel === 'Professor') {
+    // Se for um professor no Modo Aluno, usa o código de aluno genérico "0"
+    $codigo_aluno = 0;
 }
 
-// Ativa o bloco que conecta ao banco de dados
+// conecta ao banco de dados
 require_once 'conecta.php';
 include 'cabecalho.php';
 

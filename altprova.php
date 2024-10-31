@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt_prova->store_result();
 
         if ($stmt_prova->num_rows > 0) {
-            // Se a prova existir, redireciona para a página de alteração
-            header("Location: inccquestao.php?prova=$codigo_prova&codigo_aluno=$codigo_aluno");
+            // Se a prova existir, redireciona para a página de inclusão/remoção com o modo 'adicionar'
+            header("Location: inccquestao.php?prova=$codigo_prova&modo=inserir");
             exit();
         } else {
             // Se a prova não existir, exibe mensagem de erro

@@ -20,28 +20,31 @@ $modo = isset($_GET['modo']) ? $_GET['modo'] : 'alterar';
 $is_adicionar_remover = $modo === 'inserir';
 $codigo_prova = $is_adicionar_remover && isset($_GET['prova']) ? $_GET['prova'] : null;
 
-// Inicializa a variável como um array vazio para evitar erros
-$questoes_incluidas = [];
-
 if ($codigo_prova) {
-    // Inicializa a variável de questões incluídas como um array vazio
-    $questoes_incluidas = [];
+
+    
 
     // Obter as questões já associadas à prova antes da atualização
-    $sql_questoes_incluidas = "SELECT Questao FROM tabela_questoes WHERE Codigo_Prova = ?";
-    $stmt_incluidas = $con->prepare($sql_questoes_incluidas);
-    $stmt_incluidas->bind_param("s", $codigo_prova);
-    $stmt_incluidas->execute();
-    $result_incluidas = $stmt_incluidas->get_result();
-    if ($result_incluidas) {
-        while ($row = $result_incluidas->fetch_assoc()) {
-            $questoes_incluidas[] = $row['Questao'];
-        }
-    }
-    $stmt_incluidas->close();
+$questoes_incluidas = [];
+$sql_questoes_incluidas = "SELECT Questao FROM tabela_questoes WHERE Codigo_Prova = ?";
+$stmt_incluidas = $con->prepare($sql_questoes_incluidas);
+$stmt_incluidas->bind_param("s", $codigo_prova);
+$stmt_incluidas->execute();
+$result_incluidas = $stmt_incluidas->get_result();
+while ($row = $result_incluidas->fetch_assoc()) {
+    $questoes_incluidas[] = $row['Questao'];
+}
+$stmt_incluidas->close();
 
-    // Obter o número de questões já incluídas e o limite máximo
-    $total_questoes_prova = count($questoes_incluidas);
+    // Obter o número de questões já incluídas na prova e o limite permitido
+    $sql_total_questoes_prova = "SELECT COUNT(*) AS total FROM tabela_questoes WHERE Codigo_Prova = ?";
+    $stmt_total = $con->prepare($sql_total_questoes_prova);
+    $stmt_total->bind_param("s", $codigo_prova);
+    $stmt_total->execute();
+    $stmt_total->bind_result($total_questoes_prova);
+    $stmt_total->fetch();
+    $stmt_total->close();
+
     $sql_total_max = "SELECT Numero_Questoes FROM cadastro_provas WHERE Codigo_prova = ?";
     $stmt_max = $con->prepare($sql_total_max);
     $stmt_max->bind_param("s", $codigo_prova);
@@ -50,30 +53,25 @@ if ($codigo_prova) {
     $stmt_max->fetch();
     $stmt_max->close();
 
-    // Verifica se o limite foi atingido
-    $limite_atingido = $total_questoes_prova >= $total_max_questoes;
-
+    // Verifica o limite de questões ao inserir novas questões (POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && $is_adicionar_remover) {
+        // Questões selecionadas pelo usuário no formulário
         $questoes_selecionadas = isset($_POST['questoes']) ? $_POST['questoes'] : [];
+    
+        // Identificar as questões a adicionar (novas seleções) e a remover (desmarcadas)
         $questoes_a_adicionar = array_diff($questoes_selecionadas, $questoes_incluidas);
         $questoes_a_remover = array_diff($questoes_incluidas, $questoes_selecionadas);
-
+    
+        // Inserir novas questões selecionadas
         foreach ($questoes_a_adicionar as $questao) {
-            // Verifica se o limite já foi atingido antes de inserir
-            if ($total_questoes_prova < $total_max_questoes) {
-                $sql_inserir_questao = "INSERT INTO tabela_questoes (Codigo_Prova, Questao) VALUES (?, ?)";
-                $stmt_inserir = $con->prepare($sql_inserir_questao);
-                $stmt_inserir->bind_param("si", $codigo_prova, $questao);
-                $stmt_inserir->execute();
-                $stmt_inserir->close();
-                $total_questoes_prova++; // Incrementa o contador de questões
-            } else {
-                // Redireciona com mensagem de erro se o limite for atingido durante a submissão
-                header("Location: inccquestao.php?modo=inserir&prova=$codigo_prova&erro=limite_atingido");
-                exit();
-            }
+            $sql_inserir_questao = "INSERT INTO tabela_questoes (Codigo_Prova, Questao) VALUES (?, ?)";
+            $stmt_inserir = $con->prepare($sql_inserir_questao);
+            $stmt_inserir->bind_param("si", $codigo_prova, $questao);
+            $stmt_inserir->execute();
+            $stmt_inserir->close();
         }
-
+    
+        // Remover as questões desmarcadas que já estão no banco de dados
         foreach ($questoes_a_remover as $questao) {
             $sql_remover_questao = "DELETE FROM tabela_questoes WHERE Codigo_Prova = ? AND Questao = ?";
             $stmt_remover = $con->prepare($sql_remover_questao);
@@ -81,34 +79,16 @@ if ($codigo_prova) {
             $stmt_remover->execute();
             $stmt_remover->close();
         }
-
+    
+        // Redirecionar para manter os parâmetros de filtro
         header("Location: inccquestao.php?modo=inserir&prova=$codigo_prova&sucesso=atualizado");
         exit();
     }
+
+    
 }
 
 include 'cabecalho.php';
-
-// Configura o número de questões por página e a paginação (mínimo 50)
-$por_pagina = 30;
-$pagina_atual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$inicio = ($pagina_atual - 1) * $por_pagina;
-
-// Calcular o total de páginas com base no número total de questões
-$sql_total_questoes = "SELECT COUNT(*) AS total FROM cadastro_questoes";
-$resultado_total = mysqli_query($con, $sql_total_questoes);
-$total_questoes = mysqli_fetch_assoc($resultado_total)['total'];
-$total_paginas = ceil($total_questoes / $por_pagina);
-
-function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $disciplina, $professor) {
-    echo '<div class="pagination">';
-    for ($i = 1; $i <= $total_paginas; $i++) {
-        $estilo = $i == $pagina_atual ? 'font-weight: bold;' : '';
-        echo "<a href=\"inccquestao.php?pagina=$i&modo=$modo&prova=$codigo_prova&disciplina=$disciplina&professor=$professor\" style='$estilo'>$i</a> ";
-    }
-    echo '</div>';
-}
-
 ?>
 
 <section id="inner-headline">
@@ -129,21 +109,34 @@ function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-            
-            <?php
-            // Mensagens de sucesso ou erro
-                if (isset($_GET['erro']) && $_GET['erro'] == 'limite_atingido') {
-                    echo "<p style='color: red;'>Não é possível adicionar mais questões.</p>";
+                <h1><?php echo $is_adicionar_remover ? "Adicionar ou Remover Questões da Prova:" : "Alterar Questões"; ?></h1>
+
+                <?php
+                // Mensagens de sucesso ou erro
+                if (isset($_GET['erro']) && $_GET['erro'] == 'limite') {
+                    echo "<p style='color: red;'>O limite de questões para esta prova foi atingido. Novas questões não foram incluídas.</p>";
                 }
 
                 if (isset($_GET['sucesso']) && $_GET['sucesso'] == 'atualizado') {
                     echo "<p style='color: green;'>Questões atualizadas com sucesso.</p>";
                 }
-            ?>
 
-                <h1><?php echo $is_adicionar_remover ? "Adicionar ou Remover Questões da Prova:" : "Alterar Questões"; ?></h1>
+                // Obter as questões já associadas à prova, se estiver no modo de adicionar/remover
+                $questoes_incluidas = [];
+                if ($is_adicionar_remover && $codigo_prova) {
+                    $sql_questoes_incluidas = "SELECT Questao FROM tabela_questoes WHERE Codigo_Prova = ?";
+                    if ($stmt_incluidas = $con->prepare($sql_questoes_incluidas)) {
+                        $stmt_incluidas->bind_param("s", $codigo_prova);
+                        $stmt_incluidas->execute();
+                        $result_incluidas = $stmt_incluidas->get_result();
+                        while ($row = $result_incluidas->fetch_assoc()) {
+                            $questoes_incluidas[] = $row['Questao'];
+                        }
+                        $stmt_incluidas->close();
+                    }
+                }
 
-                <?php
+                // Configurações de filtro e exibição
                 $disciplina = isset($_GET['disciplina']) ? $_GET['disciplina'] : 'Todas';
                 $professor = isset($_GET['professor']) ? $_GET['professor'] : 'Todos';
                 echo "<form method=\"GET\" action=\"inccquestao.php\">";
@@ -166,11 +159,12 @@ function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $
                 echo "</select>";
                 echo " <input type=\"submit\" name=\"enviar\" value=\"Filtrar\">";
                 echo "<input type=\"hidden\" name=\"modo\" value=\"$modo\">";
-                echo "<input type=\"hidden\" name=\"prova\" value=\"$codigo_prova\">";
-                echo "<input type=\"hidden\" name=\"pagina\" value=\"$pagina_atual\">";
+                echo "<input type=\"hidden\" name=\"prova\" value=\"$codigo_prova\">"; // Preserva `prova` no filtro
                 echo "</form><br>";
 
-                exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $disciplina, $professor);
+                // Configura o número de questões por página e a paginação (mínimo 50)
+                $por_pagina = 50;
+                $qi = isset($_GET['qi']) ? $_GET['qi'] : 0;
 
                 $sql = "SELECT * FROM cadastro_questoes WHERE 1=1";
                 if ($disciplina != 'Todas') {
@@ -179,50 +173,58 @@ function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $
                 if ($professor != 'Todos' && !empty($professor)) {
                     $sql .= " AND Professor_Responsavel = '" . $professor . "'";
                 }
-                $sql .= " LIMIT $inicio, $por_pagina";
+
+                $sql .= " LIMIT $qi, $por_pagina";
                 $r = mysqli_query($con, $sql);
-                
+                $total_questoes = mysqli_num_rows($r);
+
                 echo "<form method=\"POST\" action=\"inccquestao.php?modo=$modo&prova=$codigo_prova\">";
                 echo "<div style='display: flex;'>";
 
+                // Lista de questões à esquerda
                 echo "<div style='width: 30%;'>";
                 echo "<ul>";
-
                 while ($dados = mysqli_fetch_array($r)) {
                     $highlight_class = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? "highlight" : "";
                     $checked = in_array($dados['Codigo'], $questoes_incluidas) ? "checked" : "";
                     $button_style_conditional = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? $button_style : "";
 
                     echo "<li><span class=\"$highlight_class\">";
+
+                    // Exibir caixas de seleção apenas no modo adicionar/remover
                     if ($is_adicionar_remover) {
                         echo "<input type=\"checkbox\" name=\"questoes[]\" value=\"" . $dados['Codigo'] . "\" $checked> ";
                     }
-                    echo "<a href=\"inccquestao.php?modo=$modo&prova=$codigo_prova&codigo=" . $dados['Codigo'] . "&pagina=$pagina_atual&disciplina=$disciplina&professor=$professor\" style='$button_style_conditional; margin-right: 10px;'>Questão " . $dados['Codigo'] . "</a>";
+
+                    // Botão "Ver Questão" com estilo condicional e número da questão
+                    echo "<a href=\"inccquestao.php?modo=$modo&prova=$codigo_prova&codigo=" . $dados['Codigo'] . "&por_pagina=$por_pagina&qi=$qi&disciplina=$disciplina&professor=$professor\" style='$button_style_conditional; margin-right: 10px;'>Questão " . $dados['Codigo'] . "</a>";
+
+                    // Botão "Alterar" sempre aparece
                     echo "<a href=\"altquestao.php?codigo=" . $dados['Codigo'] . "&prova=" . $codigo_prova . "\" style='$button_style_conditional;'>Alterar</a>";
+
                     echo "</span></li>";
                 }
-
                 echo "</ul>";
                 echo "</div>";
 
-                echo "<div style='width: 50%; padding-left: 20px;'>";
+                // Área de visualização da questão à direita
+                echo "<div style='width: 70%; padding-left: 20px;'>";
                 if (isset($_GET['codigo'])) {
                     $codigo_questao = $_GET['codigo'];
-                    include 'mostraq.php';
+                    include 'mostraq.php'; // Inclui o arquivo que mostra a questão selecionada
                 } else {
                     echo "<p>Selecione uma questão à esquerda para visualizar.</p>";
                 }
                 echo "</div>";
                 echo "</div>";
 
+                // Exibir o botão "Atualizar questões" apenas no modo "inserir"
                 if ($is_adicionar_remover) {
                     echo "<br><input type=\"submit\" value=\"Atualizar questões\" class=\"btn btn-primary\">";
                     echo "<input type=\"hidden\" name=\"codigo_prova\" value=\"$codigo_prova\">";
-                    echo "<input type=\"hidden\" name=\"modo\" value=\"$modo\">";
+                    echo "<input type=\"hidden\" name=\"modo\" value=\"$modo\">"; // Inclui o modo para manter na URL
                 }
                 echo "</form>";
-
-                exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $disciplina, $professor);
                 ?>
             </div>
         </div>

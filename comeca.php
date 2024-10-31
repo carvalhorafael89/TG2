@@ -34,19 +34,33 @@ if (isset($_GET['codigo_prova']) && isset($_GET['codigo_aluno'])) {
         mysqli_query($con, $sql_update_resposta);
     }
 
-    // Obter o número total de questões da prova
-    $sql_total_questoes = "SELECT COUNT(*) as total FROM gabaritos WHERE Aluno = $codigo_aluno AND Prova = '$codigo_prova'";
-    $data_total = mysqli_query($con, $sql_total_questoes);
-    $row_total = mysqli_fetch_assoc($data_total);
+ // Obter o número total de questões da prova
+$sql_total_questoes = "SELECT COUNT(*) as total FROM tabela_questoes WHERE Codigo_Prova = '$codigo_prova'";
+$data_total = mysqli_query($con, $sql_total_questoes);
+
+if ($data_total && $row_total = mysqli_fetch_assoc($data_total)) {
     $total_questoes = $row_total['total'];
+} else {
+    // Exibir uma mensagem de erro se a consulta falhar
+    echo "<p style='color: red;'>Erro ao buscar o total de questões: " . mysqli_error($con) . "</p>";
+    exit();
+}
 
-    // Ajusta o número da questão atual
-    $numero = max(1, min($numero, $total_questoes));
+// Ajusta o número da questão atual para que não ultrapasse o total de questões
+$numero = max(1, min($numero, $total_questoes));
 
-    // Buscar a questão atual
-    $sql = "SELECT * FROM gabaritos WHERE Numero = $numero AND Aluno = $codigo_aluno AND Prova = '$codigo_prova'";
-    $data_questao = mysqli_query($con, $sql);
-    $dados_questao = mysqli_fetch_assoc($data_questao);
+// Buscar a questão atual
+$sql_questao_atual = "SELECT * FROM tabela_questoes WHERE Questao = $numero AND Codigo_Prova = '$codigo_prova'";
+$data_questao = mysqli_query($con, $sql_questao_atual);
+
+if ($data_questao && $dados_questao = mysqli_fetch_assoc($data_questao)) {
+    $resposta = isset($dados_questao['Resposta_Aluno']) ? $dados_questao['Resposta_Aluno'] : '';
+    // Continue a exibir a questão e alternativas conforme necessário
+} else {
+    // Exibir uma mensagem de erro se a consulta falhar
+    echo "<p style='color: red;'>Erro ao buscar a questão atual: " . mysqli_error($con) . "</p>";
+    exit();
+}
 
     // Verifica se a questão foi encontrada
     if ($dados_questao) {
@@ -102,7 +116,6 @@ if (isset($_GET['codigo_prova']) && isset($_GET['codigo_aluno'])) {
 
             // Navegação entre questões
             echo "<div style='margin-left: 200px;'>";
-            $numero = 1;
             if ($numero > 1) {
                 $anterior = $numero - 1;
                 echo "<button type='submit' formaction='comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno&numero=$anterior' class='btn btn-secondary'>Voltar</button>";
