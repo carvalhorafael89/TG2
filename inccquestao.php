@@ -198,7 +198,12 @@ function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $
                         echo "<input type=\"checkbox\" name=\"questoes[]\" value=\"" . $dados['Codigo'] . "\" $checked> ";
                     }
                     echo "<a href=\"inccquestao.php?modo=$modo&prova=$codigo_prova&codigo=" . $dados['Codigo'] . "&pagina=$pagina_atual&disciplina=$disciplina&professor=$professor\" style='$button_style_conditional; margin-right: 10px;'>Questão " . $dados['Codigo'] . "</a>";
-                    echo "<a href=\"altquestao.php?codigo=" . $dados['Codigo'] . "&prova=" . $codigo_prova . "\" style='$button_style_conditional;'>Alterar</a>";
+                    
+                    // Verifica se o modo não é "inserir" para mostrar o botão "Alterar"
+                    if ($modo !== 'inserir') {
+                        echo "<a href=\"altquestao.php?codigo=" . $dados['Codigo'] . "&prova=" . $codigo_prova . "\" style='$button_style_conditional;'>Alterar</a>";
+                    }
+
                     echo "</span></li>";
                 }
 

@@ -34,6 +34,17 @@ if (isset($_GET['codigo_prova']) && isset($_GET['codigo_aluno'])) {
         mysqli_query($con, $sql_update_resposta);
     }
 
+    // Obter a lista de IDs das questões da prova
+$sql_questao_ids = "SELECT Questao FROM tabela_questoes WHERE Codigo_Prova = '$codigo_prova' ORDER BY Questao";
+$data_questao_ids = mysqli_query($con, $sql_questao_ids);
+$questao_ids = [];
+
+if ($data_questao_ids) {
+    while ($row = mysqli_fetch_assoc($data_questao_ids)) {
+        $questao_ids[] = $row['Questao'];
+    }
+}
+
  // Obter o número total de questões da prova
 $sql_total_questoes = "SELECT COUNT(*) as total FROM tabela_questoes WHERE Codigo_Prova = '$codigo_prova'";
 $data_total = mysqli_query($con, $sql_total_questoes);
@@ -47,20 +58,33 @@ if ($data_total && $row_total = mysqli_fetch_assoc($data_total)) {
 }
 
 // Ajusta o número da questão atual para que não ultrapasse o total de questões
-$numero = max(1, min($numero, $total_questoes));
+$sql_questao_ids = "SELECT Questao FROM tabela_questoes WHERE Codigo_Prova = '$codigo_prova' ORDER BY Questao";
+$data_questao_ids = mysqli_query($con, $sql_questao_ids);
+$questao_ids = [];
 
-// Buscar a questão atual
-$sql_questao_atual = "SELECT * FROM tabela_questoes WHERE Questao = $numero AND Codigo_Prova = '$codigo_prova'";
+if ($data_questao_ids) {
+    while ($row = mysqli_fetch_assoc($data_questao_ids)) {
+        $questao_ids[] = $row['Questao'];
+    }
+}
+
+// Ajusta $numero para exibição e para obter a questão correta
+$numero_exibido = max(1, min($numero, count($questao_ids))); // Para exibição, começa em 1
+$numero_index = $numero_exibido - 1; // Ajuste do índice (0 baseado)
+$numero_para_busca = $questao_ids[$numero_index]; // ID real da questão para busca
+
+// Buscar a questão atual usando o ID real da questão
+$sql_questao_atual = "SELECT * FROM tabela_questoes WHERE Questao = $numero_para_busca AND Codigo_Prova = '$codigo_prova'";
 $data_questao = mysqli_query($con, $sql_questao_atual);
 
 if ($data_questao && $dados_questao = mysqli_fetch_assoc($data_questao)) {
     $resposta = isset($dados_questao['Resposta_Aluno']) ? $dados_questao['Resposta_Aluno'] : '';
     // Continue a exibir a questão e alternativas conforme necessário
 } else {
-    // Exibir uma mensagem de erro se a consulta falhar
     echo "<p style='color: red;'>Erro ao buscar a questão atual: " . mysqli_error($con) . "</p>";
     exit();
 }
+
 
     // Verifica se a questão foi encontrada
     if ($dados_questao) {
@@ -74,10 +98,13 @@ if ($data_questao && $dados_questao = mysqli_fetch_assoc($data_questao)) {
         $data_questao_texto = mysqli_query($con, $sql_questao);
         $questao_texto = mysqli_fetch_assoc($data_questao_texto);
 
+
+
         // Exibir a questão e as alternativas, se existir
         if ($questao_texto) {
             echo "<form method='POST'>";
             echo "<div style='margin-left: 200px;'>";
+            echo "<div style='margin-right: 200px;'>";
             echo "<h2><small>Questão $numero de $total_questoes</small></h2>";
             echo "<h3><small>Disciplina: " . $questao_texto['Disciplina'] . "</small></h3><br>";
             echo "<h3><small>" . $questao_texto['Questao'] . "</small></h3><br>";
@@ -115,17 +142,17 @@ if ($data_questao && $dados_questao = mysqli_fetch_assoc($data_questao)) {
             }
 
             // Navegação entre questões
-            echo "<div style='margin-left: 200px;'>";
-            if ($numero > 1) {
-                $anterior = $numero - 1;
-                echo "<button type='submit' formaction='comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno&numero=$anterior' class='btn btn-secondary'>Voltar</button>";
-            }
-            if ($numero < $total_questoes) {
-                $proximo = $numero + 1;
-                echo "<button type='submit' formaction='comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno&numero=$proximo' class='btn btn-primary'>Avançar</button>";
-            } else {
-                echo "<button type='submit' formaction='finalprv.php' class='btn btn-success'>Finalizar Prova</button>";
-            }
+if ($numero_exibido > 1) {
+    $anterior = $numero_exibido - 1;
+    echo "<button type='submit' formaction='comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno&numero=$anterior' class='btn btn-secondary'>Voltar</button>";
+}
+if ($numero_exibido < $total_questoes) {
+    $proximo = $numero_exibido + 1;
+    echo "<button type='submit' formaction='comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno&numero=$proximo' class='btn btn-primary'>Avançar</button>";
+} else {
+    echo "<button type='submit' formaction='finalprv.php' class='btn btn-success'>Finalizar Prova</button>";
+}
+
 
             echo "</div>";
             echo "</form>";
