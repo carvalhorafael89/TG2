@@ -7,6 +7,10 @@ if (!isset($_COOKIE['Nivel']))
 }  
 // Ativa o bloco que conecta ao banco de dados
 require_once 'conecta.php';
+
+include 'cabecalho.php';
+
+
 ?>
 
 <?php
@@ -113,6 +117,7 @@ if (isset($_COOKIE['Nivel']))
                     {
                       echo "<center><table border=1 width=\"800\" style=\"page-break-after: always\">
                       <caption><h2>".$lqc['Titulo']."</h2><br>Data do relatório:";
+                      date_default_timezone_set('America/Sao_Paulo'); // Define o fuso horário
                       echo date("d/m/y")." ";
                       echo "Código:".$codigo_prova;
                       echo "<br>";
@@ -162,7 +167,7 @@ if (isset($_COOKIE['Nivel']))
                     
                   
                   
-                    $lista="select DISTINCT Aluno from gabaritos where Prova='".$codigo_prova."'";
+                    $lista="select DISTINCT Aluno from gabaritos where codprova='".$codigo_prova."'";
                     $l=mysqli_query($con,$lista);
                     while ($lc=mysqli_fetch_array($l))
                     {
@@ -189,7 +194,7 @@ if (isset($_COOKIE['Nivel']))
                     $total_questoes=0;
                     $pontos=0;
                     
-                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and Prova='".$codigo_prova."'";
+                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and codprova='".$codigo_prova."'";
                     $data=mysqli_query($con,$sql);
                     // echo "<table>";
                     //echo "<tr><td><h4>Questão</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta do Aluno</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta Correta</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Situação</h4></td></tr>";
@@ -440,7 +445,7 @@ else
                     
                   
                   
-                    $lista="select DISTINCT Aluno from gabaritos where Prova='".$codigo_prova."'";
+                    $lista="select DISTINCT Aluno from gabaritos where codprova='".$codigo_prova."'";
                     $l=mysqli_query($con,$lista);
                     while ($lc=mysqli_fetch_array($l))
                     {
@@ -469,7 +474,7 @@ else
                     $pontos=0;
                       $pdisto=0;
                     
-                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and Prova='".$codigo_prova."'";
+                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and codprova='".$codigo_prova."'";
                     $data=mysqli_query($con,$sql);
                     // echo "<table>";
                     //echo "<tr><td><h4>Questão</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta do Aluno</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta Correta</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Situação</h4></td></tr>";
@@ -632,7 +637,7 @@ else
                     
                   
                   
-                    $lista="select DISTINCT Aluno from gabaritos where Prova='".$codigo_prova."'";
+                    $lista="select DISTINCT Aluno from gabaritos where codprova='".$codigo_prova."'";
                     $l=mysqli_query($con,$lista);
                     while ($lc=mysqli_fetch_array($l))
                     {
@@ -659,7 +664,7 @@ else
                     $total_questoes=0;
                     $pontos=0;
                     
-                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and Prova='".$codigo_prova."'";
+                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and codprova='".$codigo_prova."'";
                     $data=mysqli_query($con,$sql);
                     // echo "<table>";
                     //echo "<tr><td><h4>Questão</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta do Aluno</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta Correta</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Situação</h4></td></tr>";
@@ -730,4 +735,13 @@ else
 ?>
  
 </section>
-<?php //include 'footer.php'; ?>
+<!-- Botão de impressão -->
+<div style="text-align: center; margin: 20px;">
+    <button onclick="window.print()" class="btn btn-primary">Imprimir</button>
+</div>
+
+<?php // include 'footer.php'; ?>
+
+</body>
+</html>
+<?php include 'footer.php'; ?>

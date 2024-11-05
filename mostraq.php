@@ -16,15 +16,16 @@ if (isset($_COOKIE['Nivel'])) {
         
         while ($bqdados = mysqli_fetch_array($resp1)) {
             // Exibe a disciplina
-            echo "<p><small>Esta questão refere-se à disciplina: " . $bqdados['Disciplina'] . "</small></p>";
+            //echo "<p><small>Esta questão refere-se à disciplina: " . $bqdados['Disciplina'] . "</small></p>";
+            echo "<p>Esta questão refere-se à disciplina: " . $bqdados['Disciplina'] . "</p>";
             echo "<br>";
             
             // Mostra o texto da questão
-            echo "<p><small>" . $bqdados['Questao'] . "</small></p>";
+            echo "<p>" . $bqdados['Questao'] . "</p>";
             echo "<br>";
             
             if ($bqdados['Figura'] && $bqdados['Figura'] != 'figuras/') {
-                echo "<a href=\"" . $bqdados['Figura'] . "\" target=\"_blank\"><img src=\"" . $bqdados['Figura'] . "\" width=\"800\"></a>";
+                echo "<a href=\"" . $bqdados['Figura'] . "\" target=\"_blank\"><img src=\"" . $bqdados['Figura'] . "\" width=\"700\"></a>";
                 echo "<br><small>Clique na figura para ver no tamanho original.</small><br>";
             }
 

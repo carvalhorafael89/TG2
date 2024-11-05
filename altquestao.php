@@ -179,21 +179,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <tr><td>&nbsp;</td><td></td></tr>
                 <tr>
                 <td style="font-weight: bold;">Figura:</td>
-    <td>
-        <?php if (!empty($questao['Figura'])): ?>
-            <p>Figura atual: <a href="<?php echo $questao['Figura']; ?>" target="_blank">Visualizar</a></p>
+<td>
+    <?php if (!empty($questao['Figura']) && $questao['Figura'] !== 'figuras/'): ?>
+        <p>Figura atual: <a href="<?php echo $questao['Figura']; ?>" target="_blank">Visualizar</a></p>
+    <?php else: ?>
+        <p>Sem imagem disponível</p>
+    <?php endif; ?>
+    <div style="display: flex; align-items: center;">
+        <input name="arquivo" type="file" style="flex: 1;">
+        <!-- Exibir o caminho da imagem ao lado do botão "Browse..." -->
+        <?php if (!empty($questao['Figura']) && $questao['Figura'] !== 'figuras/'): ?>
+            <span style="margin-left: 10px;"><?php echo htmlspecialchars($questao['Figura']); ?></span>
         <?php endif; ?>
-        <div style="display: flex; align-items: center;">
-            <input name="arquivo" type="file" style="flex: 1;">
-            <!-- Exibir o caminho da imagem ao lado do botão "Browse..." -->
-            <?php if (!empty($questao['Figura']) && $questao['Figura'] !== 'figuras/'): ?>
-                <span style="margin-left: 10px;"><?php echo htmlspecialchars($questao['Figura']); ?></span>
-            <?php endif; ?>
-            <div style="margin-left: 10px;">
-                <button type="submit" name="remover_imagem" class="btn btn-delete" onclick="return confirm('Tem certeza de que deseja remover a imagem?');">Remover Imagem</button>
-            </div>
+        <div style="margin-left: 10px;">
+            <button type="submit" name="remover_imagem" class="btn btn-delete" onclick="return confirm('Tem certeza de que deseja remover a imagem?');">Remover Imagem</button>
         </div>
-    </td>
+    </div>
+</td>
                 <tr><td>&nbsp;</td><td></td></tr>
                 <tr>
                 <td style="font-weight: bold;">Professor:</td>

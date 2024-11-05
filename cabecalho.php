@@ -122,16 +122,17 @@ echo '
 
   <div class="navbar navbar-default navbar-static-top">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.php"><img src="img/logo.png" alt="" width="120" height="72" /></a>
-        </div>
-        <div class="navbar-collapse collapse ">
-            <ul class="nav navbar-nav">';
+       <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="index.php"><img src="img/logo.png" alt="" width="120" height="72" /></a></div>
+<div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+        <!-- Adicionar botão "Home" -->
+        <li><a href="index.php">Home</a></li>';
 
 // Adicionar botão para alternar entre modo aluno e professor, apenas para professores
 if ($nivel == "Professor") {
@@ -165,8 +166,7 @@ if ($nivel == "Aluno" || $modo_aluno) {
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Questões</a>
           <ul class="dropdown-menu">
               <li><a href="cadquestao.php">Incluir</a></li>
-              <li><a href="inccquestao.php">Alterar</a></li>
-              <li><a href="#">Excluir</a></li>
+              <li><a href="inccquestao.php">Alterar / Excluir</a></li>
           </ul>  
         </li>
         <li class="dropdown-submenu">
@@ -174,7 +174,7 @@ if ($nivel == "Aluno" || $modo_aluno) {
           <ul class="dropdown-menu">
               <li><a href="cadprova.php">Criar nova prova ou simulado</a></li>
               <li><a href="altprova.php">Alterar prova ou simulado</a></li>
-              <li><a href="altprova.php">Excluir prova ou simulado</a></li>
+              <li><a href="delprova.php">Excluir prova ou simulado</a></li>
               <li><a href="realiza.php">Testar prova ou simulado</a></li>
               <li><a href="rel6.php">Encerra todas as provas em andamento</a></li>
           </ul>  
@@ -183,7 +183,7 @@ if ($nivel == "Aluno" || $modo_aluno) {
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Alunos</a>
           <ul class="dropdown-menu">
               <li><a href="cadAluno.php">Cadastrar Aluno(a)</a></li>
-              <li><a href="#">Alterar dados de Aluno(a)</a></li>
+              <li><a href="verifica.php">Alterar dados de Aluno(a)</a></li>
               <li><a href="#">Excluir Aluno(a)</a></li>
               <li><a href="#">Pesquisar Aluno Cadastrado</a></li>
           </ul>  
@@ -207,8 +207,25 @@ if ($nivel == "Visitante") {
     echo '<li><a href="login.php">Login</a></li>
           <li><a href="verifica.php">Cadastre-se</a></li>';
 } else {
-    echo '<li><a href="sair.php">Sair</a></li>';
+    // Adicionar botão "Sair" com verificação do modo aluno
+if ($nivel !== "Visitante") {
+  if ($modo_aluno && $nivel === "Professor") {
+      // Se o usuário for um professor em modo aluno, mudar para o modo professor antes de fazer logout
+      echo '
+      <li>
+          <form method="GET" action="mudar_modo.php" style="display:inline;">
+              <input type="hidden" name="modo" value="sair_modo_aluno">
+              <input type="hidden" name="redirect" value="logout">
+              <button type="submit" class="faixa-botao">Sair</button>
+          </form>
+      </li>';
+  } else {
+      // Botão de logout normal para outros usuários
+      echo '<li><a href="sair.php">Sair</a></li>';
+  }
 }
+}
+
 
 echo ' </ul>
         </div>

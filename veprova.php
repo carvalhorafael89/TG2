@@ -1,23 +1,25 @@
 <?php
+// Iniciar buffer de saída
+ob_start();
+
 if (!isset($_COOKIE['Nivel'])) {
     $voltar = "login.php?acesso=denied";
     header("Location: $voltar");
     exit();
 }
 
-// Ativa o bloco que conecta ao banco de dados
+// Conectar ao banco de dados
 require_once 'conecta.php';
 include 'cabecalho.php';
 
 if (isset($_COOKIE['Nivel'])) {
     $nivel = $_COOKIE['Nivel'];
     $nome  = $_COOKIE['Nome'];
-    $Email = $_COOKIE['Email'];
+    $email = $_COOKIE['Email'];
     $codigo = $_COOKIE['Codigo'];
     $codigo_aluno = $codigo;
 ?>
 
-<!-- end header -->
 <section id="inner-headline">
     <div class="container">
         <div class="row">
@@ -34,28 +36,19 @@ if (isset($_COOKIE['Nivel'])) {
 
 <section id="content">
     <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-0">
-                <form role="form" class="register-form" method="POST" action="fazprova.php">
-                    <h2>Atenção: <small>Digite o código da prova que deseja verificar.</small></h2>
+        <div class="row justify-content-center">
+            <div class="col-xs-12 col-sm-8 col-md-6">
+                <form role="form" class="register-form" method="POST" action="veprova.php">
+                    <h2 style="text-align: center;">Atenção: <small>Digite o código da prova que deseja verificar.</small></h2>
                     <div class="form-group">
                         <label for="codigo_prova">Código da Prova</label>
-                        <select name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Código da Prova" tabindex="4" required>
-                            <option value="" disabled selected>Selecione o código da prova</option>
-                            <?php
-                                $sql = "SELECT DISTINCT Prova FROM gabaritos WHERE Aluno = $codigo_aluno";
-                                $data = mysqli_query($con, $sql);
-                                while ($dados = mysqli_fetch_array($data)) {
-                                    echo "<option value='" . $dados['Prova'] . "'>" . $dados['Prova'] . "</option>";
-                                }
-                            ?>
-                        </select>
+                        <input type="text" name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Digite o código da prova" required>
                     </div>
                     
                     <input type="hidden" name="codigo_aluno" value="<?php echo $codigo_aluno; ?>">
-                    <div class="row">
+                    <div class="row justify-content-center">
                         <div class="col-xs-12 col-md-6">
-                            <input type="submit" value="Verificar Respostas" class="btn btn-primary btn-block btn-lg" tabindex="7">
+                            <input type="submit" value="Verificar Respostas" class="btn btn-primary btn-block btn-lg">
                         </div>
                     </div>
                 </form>
@@ -65,7 +58,35 @@ if (isset($_COOKIE['Nivel'])) {
 </section>
 
 <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_prova']) && isset($_POST['codigo_aluno'])) {
+    $codigo_prova = mysqli_real_escape_string($con, $_POST['codigo_prova']);
+    $codigo_aluno = (int)$_POST['codigo_aluno'];
+
+    // Verificar o status de finalização da prova
+    $sql_verifica_finalizado = "SELECT Finalizado FROM gabaritos WHERE Aluno = $codigo_aluno AND codprova = '$codigo_prova' LIMIT 1";
+    $resultado_finalizado = mysqli_query($con, $sql_verifica_finalizado);
+
+    if (!$resultado_finalizado) {
+        echo "<p style='color: red; text-align: center;'>Erro na consulta: " . mysqli_error($con) . "</p>";
+    } else {
+        $dados_finalizado = mysqli_fetch_assoc($resultado_finalizado);
+
+        if ($dados_finalizado) {
+            $finalizado = $dados_finalizado['Finalizado'];
+
+            // Redirecionar para comeca.php com o status de finalização
+            header("Location: comeca.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno&finalizado=$finalizado");
+            exit();
+        } else {
+            echo "<p style='color: red; text-align: center;'>Prova não encontrada ou não iniciada.</p>";
+        }
+    }
+}
+
 include 'footer.php';
+
+// Enviar o buffer de saída e encerrar
+ob_end_flush();
 } else {
     $voltar = "login.php?acesso=denied";
     header("Location: $voltar");

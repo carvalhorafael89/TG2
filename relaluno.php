@@ -54,13 +54,14 @@ if (isset($_COOKIE['Nivel']))
                     $codigo_prova=$_GET['codigo_prova'];
                     $linha=1;
           
-          $nq="select * from cadastro_provas where Codigo_prova='".$codigo_prova."'";
+          $nq="select * from cadastro_provas where codigo_prova='".$codigo_prova."'";
                     $lq=mysqli_query($con,$nq);
                     $nq=1;
                     while ($lqc=mysqli_fetch_array($lq))
                     {
                       echo "<center><table width=\"800\">
                       <caption><h2>".$lqc['Titulo']."</h2></caption>";
+                      date_default_timezone_set('America/Sao_Paulo'); // Define o fuso horário
                       echo "<tr><td>Data do relatório:".date("d/m/y")."</td><td>&nbsp;&nbsp;&nbsp;</td>";
                       echo "<td>Código:".$codigo_prova."</td>";
                       echo "</tr>";
@@ -79,16 +80,11 @@ if (isset($_COOKIE['Nivel']))
                     
                   
                   
-                    $lista="select DISTINCT Aluno from gabaritos where Prova='".$codigo_prova."'";
+                    $lista="select DISTINCT Aluno from gabaritos where codprova='".$codigo_prova."'";
                     $l=mysqli_query($con,$lista);
                     while ($lc=mysqli_fetch_array($l))
                     {
                         $codigo_aluno=$lc['Aluno'];
-                        //echo $codigo_aluno;
-                    
-                    
-                    
-                    
                     $temp="select * from cadastro_alunos where Codigo=".$codigo_aluno;
                     $temp2=mysqli_query($con,$temp);
                     
@@ -106,7 +102,7 @@ if (isset($_COOKIE['Nivel']))
                     $total_questoes=0;
                     $pontos=0;
                     
-                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and Prova='".$codigo_prova."'";
+                    $sql="SELECT * from gabaritos where Aluno=".$codigo_aluno." and codprova='".$codigo_prova."'";
                     $data=mysqli_query($con,$sql);
                     // echo "<table>";
                     //echo "<tr><td><h4>Questão</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta do Aluno</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Resposta Correta</h4></td><td>&nbsp;&nbsp;&nbsp;</td><td><h4>Situação</h4></td></tr>";

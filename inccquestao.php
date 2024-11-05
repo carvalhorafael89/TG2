@@ -170,7 +170,10 @@ function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $
                 echo "<input type=\"hidden\" name=\"pagina\" value=\"$pagina_atual\">";
                 echo "</form><br>";
 
-                exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $disciplina, $professor);
+echo "<div style='text-align: center; margin-top: 20px;'>";
+
+echo "</div>";
+
 
                 $sql = "SELECT * FROM cadastro_questoes WHERE 1=1";
                 if ($disciplina != 'Todas') {
@@ -179,38 +182,38 @@ function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $
                 if ($professor != 'Todos' && !empty($professor)) {
                     $sql .= " AND Professor_Responsavel = '" . $professor . "'";
                 }
-                $sql .= " LIMIT $inicio, $por_pagina";
+                //$sql .= " LIMIT $inicio, $por_pagina";
                 $r = mysqli_query($con, $sql);
                 
                 echo "<form method=\"POST\" action=\"inccquestao.php?modo=$modo&prova=$codigo_prova\">";
                 echo "<div style='display: flex;'>";
 
-                echo "<div style='width: 30%;'>";
-                echo "<ul>";
+                echo "<div style='width: 30%; height: 700px; overflow-y: scroll;'>";
+echo "<ul>";
 
-                while ($dados = mysqli_fetch_array($r)) {
-                    $highlight_class = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? "highlight" : "";
-                    $checked = in_array($dados['Codigo'], $questoes_incluidas) ? "checked" : "";
-                    $button_style_conditional = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? $button_style : "";
+while ($dados = mysqli_fetch_array($r)) {
+    $highlight_class = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? "highlight" : "";
+    $checked = in_array($dados['Codigo'], $questoes_incluidas) ? "checked" : "";
+    $button_style_conditional = (isset($_GET['codigo']) && $_GET['codigo'] == $dados['Codigo']) ? $button_style : "";
 
-                    echo "<li><span class=\"$highlight_class\">";
-                    if ($is_adicionar_remover) {
-                        echo "<input type=\"checkbox\" name=\"questoes[]\" value=\"" . $dados['Codigo'] . "\" $checked> ";
-                    }
-                    echo "<a href=\"inccquestao.php?modo=$modo&prova=$codigo_prova&codigo=" . $dados['Codigo'] . "&pagina=$pagina_atual&disciplina=$disciplina&professor=$professor\" style='$button_style_conditional; margin-right: 10px;'>Questão " . $dados['Codigo'] . "</a>";
-                    
-                    // Verifica se o modo não é "inserir" para mostrar o botão "Alterar"
-                    if ($modo !== 'inserir') {
-                        echo "<a href=\"altquestao.php?codigo=" . $dados['Codigo'] . "&prova=" . $codigo_prova . "\" style='$button_style_conditional;'>Alterar</a>";
-                    }
+    echo "<li><span class=\"$highlight_class\">";
+    if ($is_adicionar_remover) {
+        echo "<input type=\"checkbox\" name=\"questoes[]\" value=\"" . $dados['Codigo'] . "\" $checked> ";
+    }
+    echo "<a href=\"inccquestao.php?modo=$modo&prova=$codigo_prova&codigo=" . $dados['Codigo'] . "&pagina=$pagina_atual&disciplina=$disciplina&professor=$professor\" style='$button_style_conditional; margin-right: 10px;'>Questão " . $dados['Codigo'] . "</a>";
+    
+    // Verifica se o modo não é "inserir" para mostrar o botão "Alterar"
+    if ($modo !== 'inserir') {
+        echo "<a href=\"altquestao.php?codigo=" . $dados['Codigo'] . "&prova=" . $codigo_prova . "\" style='$button_style_conditional;'>Alterar</a>";
+    }
 
-                    echo "</span></li>";
-                }
+    echo "</span></li>";
+}
 
-                echo "</ul>";
-                echo "</div>";
+echo "</ul>";
+echo "</div>";
 
-                echo "<div style='width: 50%; padding-left: 20px;'>";
+                echo "<div style='width: 70%; padding-left: 00px;'>";
                 if (isset($_GET['codigo'])) {
                     $codigo_questao = $_GET['codigo'];
                     include 'mostraq.php';
@@ -227,7 +230,11 @@ function exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $
                 }
                 echo "</form>";
 
-                exibir_paginacao($total_paginas, $pagina_atual, $modo, $codigo_prova, $disciplina, $professor);
+echo "<div style='text-align: center; margin-top: 20px;'>";
+
+
+echo "</div>";
+
                 ?>
             </div>
         </div>

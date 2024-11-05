@@ -44,24 +44,44 @@ $erro_codigo = "";
 
 // Verifica se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $codigo_prova = $_POST['codigo_prova'];
+  $codigo_prova = $_POST['codigo_prova'];
 
-    // Verificar se o código da prova existe no banco de dados
-    $sql = "SELECT * FROM cadastro_provas WHERE Codigo_prova = ?";
-    $stmt = $con->prepare($sql);
-    $stmt->bind_param("s", $codigo_prova);
-    $stmt->execute();
-    $result = $stmt->get_result();
+  // Verificar se o código da prova existe no banco de dados
+  $sql = "SELECT * FROM cadastro_provas WHERE Codigo_prova = ?";
+  $stmt = $con->prepare($sql);
+  $stmt->bind_param("s", $codigo_prova);
+  $stmt->execute();
+  $result = $stmt->get_result();
 
-    // Se o código da prova não existir, define a mensagem de erro
-    if ($result->num_rows === 0) {
-        $erro_codigo = "Código da prova inválido. Verifique com seu professor.";
-    } else {
-        header("Location: fazprova.php?codigo_prova=" . urlencode($codigo_prova) . "&codigo_aluno=" . urlencode($codigo_aluno));
-        exit();
-    }
+  // Se o código da prova não existir, define a mensagem de erro
+  if ($result->num_rows === 0) {
+      $erro_codigo = "Código da prova inválido. Verifique com seu professor.";
+  } else {
+      // Verificar se o aluno já realizou a prova, exceto se for um professor em modo aluno
+      if (!$modo_aluno || ($modo_aluno && $nivel !== 'Professor')) {
+          $sql_verifica_resposta = "SELECT * FROM gabaritos WHERE Aluno = ? AND codprova = ? AND Finalizado = 'Sim'";
+          $stmt_verifica = $con->prepare($sql_verifica_resposta);
+          $stmt_verifica->bind_param("is", $codigo_aluno, $codigo_prova);
+          $stmt_verifica->execute();
+          $resultado_resposta = $stmt_verifica->get_result();
+
+          if ($resultado_resposta->num_rows > 0) {
+              $erro_codigo = "Você já realizou esta prova. Verifique com seu professor.";
+          } else {
+              // Redirecionar para a página da prova se ainda não foi realizada
+              header("Location: fazprova.php?codigo_prova=" . urlencode($codigo_prova) . "&codigo_aluno=" . urlencode($codigo_aluno));
+              exit();
+          }
+      } else {
+          // Permitir acesso se for um professor em modo aluno
+          header("Location: fazprova.php?codigo_prova=" . urlencode($codigo_prova) . "&codigo_aluno=" . urlencode($codigo_aluno));
+          exit();
+      }
+  }
 }
 ?>
+
+
 <!-- end header -->
 <section id="inner-headline">
   <div class="container">

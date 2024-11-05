@@ -8,21 +8,25 @@ $erro = '';
 $raErrorStyle = '';
 $cpfErrorStyle = '';
 
+
+// Inicializa a variável $ra como vazia se não estiver definida
+$ra = isset($_GET['ra']) ? $_GET['ra'] : '';
+$cpf = isset($_GET['cpf']) ? $_GET['cpf'] : '';
+
 // Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Captura o valor do RA e do CPF
-    $ra = $_POST['ra'] ?? ''; // Se o campo não existir, atribui uma string vazia
-    $cpf = $_POST['cpf'] ?? ''; // O mesmo para o CPF
-
+    $ra = isset($_POST['ra']) ? $_POST['ra'] : ''; // Adiciona verificação para a variável $ra
+    $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : ''; //
+    
     // Verifica se RA ou CPF foi preenchido
     if (empty($ra) && empty($cpf)) {
         $erro = "<p style='color:red; font-weight:bold;'>Por favor, preencha RA ou CPF.</p>";
         $raErrorStyle = 'border: 2px solid red;';
         $cpfErrorStyle = 'border: 2px solid red;';
     } else {
-        // Verifica se RA ou CPF já existe no banco de dados
-        $sql = "SELECT * FROM cadastro_alunos WHERE ra = '$ra' OR cpf = '$cpf'";
-        $result = mysqli_query($con, $sql);
+// Verifica se o RA foi passado como parâmetro na URL ou inicializa como vazio
+$ra = isset($_GET['ra']) ? $_GET['ra'] : '';
 
         if (mysqli_num_rows($result) > 0) {
             // RA ou CPF já existe no banco
@@ -97,14 +101,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <!-- Campo de RA -->
                         <tr>
                             <td> RA:</td>
-                            <td><input type="text" name="ra" size="20" value="<?php echo $ra ?? ''; ?>" style="<?php echo $raErrorStyle; ?>"></td>
+                            <td><input type="text" name="ra" size="20" value="<?php echo htmlspecialchars($ra); ?>"></td>
                         </tr>
-                        <tr><td>&nbsp;</td><td></td></tr>
+                            <td>&nbsp;</td><td></td></tr>
+                            
                         
                         <!-- Campo de CPF -->
                         <tr>
                             <td> CPF:</td>
-                            <td><input type="text" name="cpf" size="20" value="<?php echo $cpf ?? ''; ?>" style="<?php echo $cpfErrorStyle; ?>"></td>
+                            <td><input type="text" name="cpf" size="20" value="<?php echo htmlspecialchars($cpf); ?>"></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
                         

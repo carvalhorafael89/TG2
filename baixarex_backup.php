@@ -27,10 +27,9 @@ if (isset($_COOKIE['Nivel'])) {
         $codigo_prova = $_GET['codigo_prova'];
         
         // Cabeçalho da planilha
-        echo "<tr><th colspan='9' style='width: 100px; background-color: #B20000; color: white;'>". utf8_decode("RELATÓRIO GERAL") . "</th>";
         echo "<tr>
                 <th style='width: 100px; background-color: #B20000; color: white;'>Codigo do Aluno</th>
-                <th style='width: 100px; background-color: #B20000; color: white;'>RA</th>
+                <th style='width: 150px; background-color: #B20000; color: white;'>RA</th>
                 <th style='width: 200px; background-color: #B20000; color: white;'>Nome do Aluno</th>";
         
         // Adiciona as questões ao cabeçalho e armazena a ordem das questões em um array

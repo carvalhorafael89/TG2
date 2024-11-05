@@ -45,7 +45,6 @@ if (isset($_COOKIE['Nivel']))
         <form role="form" class="register-form" method="GET" action="baixarex.php">
                                
       <h2>Atenção: <small>Digite o código da prova.</small></h2>
-      <hr class="colorgraph">
 
       <div class="form-group">
         <select name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Código da Prova" tabindex="4">
@@ -56,7 +55,7 @@ if (isset($_COOKIE['Nivel']))
                     while ($dados=mysqli_fetch_array($data))
                     {
                         echo "<option>";
-                        echo $dados['Codigo_prova'];
+                        echo $dados['codigo_prova'];
                         echo "</option>";
                     }
            ?>
@@ -64,11 +63,6 @@ if (isset($_COOKIE['Nivel']))
         <!-- <input type="text" name="codigo_prova" id="codigo_prova" class="form-control input-lg" placeholder="Código da Prova" tabindex="4"> -->
                                 <input type="hidden" name="codigo_aluno" value="<?php echo $codigo_aluno; ?>">
       </div>
-      
-
-      
-      
-      <hr class="colorgraph">
       <div class="row">
         <div class="col-xs-12 col-md-6"><input type="submit" value="Gerar Relatório" class="btn btn-primary btn-block btn-lg" tabindex="7"></div>
         
