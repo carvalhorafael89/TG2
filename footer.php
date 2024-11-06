@@ -20,7 +20,6 @@ echo '<footer>
 					<h4>Informações</h4>
 					<ul class="link-list">
 						<li><a href="https://fatecitu.cps.sp.gov.br/missao-visao-e-valores/">Missão, Visão e Valores</a></li>
-						<li><a href="hhttps://fatecitu.cps.sp.gov.br/cps-carreiras/">CPS Carreiras</a></li>
 						<li><a href="https://fatecitu.cps.sp.gov.br/infraestrutura/">Nossa Estrutura</a></li>
 						<li><a href="https://fatecitu.cps.sp.gov.br/comunicacao/revista-varvitu/">Revista V@rvitu</a></li>
 						<li><a href="https://fatecitu.cps.sp.gov.br/contato/">Fale conosco</a></li>
