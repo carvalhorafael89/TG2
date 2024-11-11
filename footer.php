@@ -8,10 +8,13 @@ echo '<footer>
 					<h4>Entre em contato conosco:</h4>
 					<address>
 					<strong>Fatec Itu – Dom Amaury Castanho</strong><br>
-					 Av. Tiradentes, 1211 - Parque Industrial<br>
-					 Itu - SP - CEP: 13309-640 </address>
-					<p>
-						<i class="icon-phone"></i> +55 (11) 4013-1872<br>
+					<a href="https://www.google.com/maps?q=Av.+Tiradentes,+1211+-+Parque+Industrial,+Itu+-+SP+-+CEP:+13309-640" target="_blank">
+						Av. Tiradentes, 1211 - Parque Industrial<br>
+						Itu - SP - CEP: 13309-640
+					</a><br>
+
+						<i class="icon-phone"></i> <a href="tel:+551140131872">+55 (11) 4013-1872</a><br>
+
 					</p>
 				</div>
 			</div>
@@ -19,10 +22,10 @@ echo '<footer>
 				<div class="widget">
 					<h4>Informações</h4>
 					<ul class="link-list">
-						<li><a href="https://fatecitu.cps.sp.gov.br/missao-visao-e-valores/">Missão, Visão e Valores</a></li>
-						<li><a href="https://fatecitu.cps.sp.gov.br/infraestrutura/">Nossa Estrutura</a></li>
-						<li><a href="https://fatecitu.cps.sp.gov.br/comunicacao/revista-varvitu/">Revista V@rvitu</a></li>
-						<li><a href="https://fatecitu.cps.sp.gov.br/contato/">Fale conosco</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/missao-visao-e-valores/" target="_blank">Missão, visão e valores</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/infraestrutura/" target="_blank">Infraestrutura</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/comunicacao/revista-varvitu/" target="_blank">Revista Varvitu</a></li>
+						<li><a href="https://fatecitu.cps.sp.gov.br/contato/" target="_blank">Contato</a></li>
 					</ul>
 				</div>
 				
@@ -49,23 +52,16 @@ echo '<footer>
 				<div class="col-lg-6">
 					<div class="copyright">
 						<p>
-							<span>&copy; Sailor 2015 All right reserved. | <a href="http://bootstraptaste.com/">Bootstrap Themes</a> by BootstrapTaste
-                             <!-- 
-                                All links in the footer should remain intact. 
-                                Licenseing information is available at: http://bootstraptaste.com/license/
-                                You can buy this theme without footer links online at: http://bootstraptaste.com/buy/?theme=Sailor
-                            -->
-						
+							<span>&copy; Carvalho e Teochi reserved. 
 						</p>
 					</div>
 				</div>
-				<div class="col-lg-6">
+				<div class="col-lg-6">	
 					<ul class="social-network">
-						<li><a href="#" data-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a></li>
-						<li><a href="#" data-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a></li>
-						<li><a href="#" data-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a></li>
-						<li><a href="#" data-placement="top" title="Pinterest"><i class="fa fa-pinterest"></i></a></li>
-						<li><a href="#" data-placement="top" title="Google plus"><i class="fa fa-google-plus"></i></a></li>
+						<li><a href="https://www.facebook.com/FatecItu/?locale=pt_BR" target="_blank" data-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="https://www.linkedin.com/school/fatec-itu/posts/?feedView=all" target="_blank" data-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a></li>
+						<li><a href="https://www.instagram.com/fatecitu/" target="_blank" data-placement="top" title="Instagram"><i class="fa fa-instagram"></i></a></li>
+
 					</ul>
 				</div>
 			</div>

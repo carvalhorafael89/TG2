@@ -40,11 +40,11 @@
         <li>
             <img src="img/slides/flexslider/2.jpg" alt="" />
             <div class="flex-caption">
-                <?php if ($nivel == "Professor") { // Verifica se o usuário é professor ?>
+                <?php if ($nivel == "Professor") {  ?>
                     <h3>Cadastre seu aluno</h3>
                     <p>É necessário o cadastro dos alunos para a realização dos simulados</p>
                     <a href="cadAluno.php" class="btn btn-theme">Cadastrar Aluno</a>
-                <?php } else { // Caso contrário, o conteúdo é para aluno/visitante ?>
+                <?php } else {  ?>
                     <h3>Aumente suas chances</h3> 
                     <p>Solicite ao professor o código da prova e teste seus conhecimentos.</p> 
                     <a href="realiza.php" class="btn btn-theme">Começar</a>
@@ -55,11 +55,11 @@
         <li>
             <img src="img/slides/flexslider/3.jpg" alt="" />
             <div class="flex-caption">
-                <?php if ($nivel == "Professor") { // Verifica se o usuário é professor ?>
+                <?php if ($nivel == "Professor") {  ?>
                     <h3>Não esqueça!</h3>
                     <p>Forneça o código da prova para seus alunos que irão realizar o simulado</p>
-                    <!-- Sem botão para este slide -->
-                <?php } else { // Caso contrário, o conteúdo é para aluno/visitante ?>
+                   
+                <?php } else {  ?>
                     <h3>Faça onde Quiser</h3> 
                     <p>E correção é na mesma hora, sem esperas.</p> 
                     <a href="veprova.php" class="btn btn-theme">Começar</a>
@@ -187,7 +187,7 @@
     <!-- end divider -->
     
     <div class="container">
-    <div class="row">
+    <div style = "text-align: justify;">
       <div class="col-lg-12">
         <div class="row">
           <div class="col-sm-6 col-lg-6">
@@ -199,7 +199,7 @@
               <p>São os princípios que moldam a Fatec Itu e orientam nossas ações diárias em direção a uma educação superior tecnológica de excelência, com impacto real na sociedade.</p>
             </p>
           </div>
-          <!--
+     
           <div class="col-sm-6 col-lg-6">
             <h4>Estatísticas</h4>
             <div class="progress">
@@ -228,7 +228,7 @@
               </div>
             </div>
           </div>
-                -->
+              
         </div>
       </div>
     </div>
@@ -357,35 +357,22 @@
  
   -->
         
-    <!-- clients -->
+<!-- clients -->
     <div class="container">
-        <div class="row">
-                <div class="col-xs-6 col-md-2 aligncenter client">
-                  <img alt="logo" src="img/clients/logo1.png" class="img-responsive" />
-                </div>                      
-                          
-                <div class="col-xs-6 col-md-2 aligncenter client">
-                  <img alt="logo" src="img/clients/logo2.png" class="img-responsive" />
-                </div>                      
-                          
-                <div class="col-xs-6 col-md-2 aligncenter client">
-                  <img alt="logo" src="img/clients/logo3.png" class="img-responsive" />
-                </div>                      
-                          
-                <div class="col-xs-6 col-md-2 aligncenter client">
-                  <img alt="logo" src="img/clients/logo4.png" class="img-responsive" />
-                </div>                  
-                
-                <div class="col-xs-6 col-md-2 aligncenter client">
-                  <img alt="logo" src="img/clients/logo5.png" class="img-responsive" />
-                </div>                  
-                <div class="col-xs-6 col-md-2 aligncenter client">
-                  <img alt="logo" src="img/clients/logo6.png" class="img-responsive" />
-                </div>  
-
+        <div class="justify-content-center d-flex">
+            <div class="col-xs-6 col-md-2 d-flex justify-content-center align-items-center client">
+                <img alt="logo" src="img/clients/logo4.png" class="img-responsive img-hover" />
+            </div>                  
+            <div class="col-xs-6 col-md-2 d-flex justify-content-center align-items-center client">
+                <img alt="logo" src="img/clients/logo5.png" class="img-responsive img-hover" />
+            </div>                  
+            <div class="col-xs-6 col-md-2 d-flex justify-content-center align-items-center client">
+                <img alt="logo" src="img/clients/logo6.png" class="img-responsive img-hover" />
+            </div>  
         </div>
     </div>
-  
+
+
   </section>
   
 <?php
