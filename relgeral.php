@@ -52,7 +52,7 @@ if (isset($_COOKIE['Nivel'])) {
             echo "<td>Q$numero_questao</td>";
             $numero_questao++;
         }
-        echo "<td></td><td>&nbsp;Acertos&nbsp;</td><td>Nota</td><td>&nbsp;%Acertos&nbsp;</td>";
+        echo "<td>&nbsp;Acertos&nbsp;</td><td>Nota</td><td>&nbsp;%Acertos&nbsp;</td>";
         echo "</tr>";
 
         // Linha do gabarito
@@ -157,7 +157,7 @@ foreach ($disciplinas as $disciplina) {
         }
     }
 
-    echo "<td></td><td>&nbsp;Acertos&nbsp;</td><td>Nota</td><td>&nbsp;%Acertos&nbsp;</td>";
+    echo "<td>&nbsp;Acertos&nbsp;</td><td>Nota</td><td>&nbsp;%Acertos&nbsp;</td>";
     echo "</tr>";
 
     // Gabarito por disciplina
@@ -233,7 +233,7 @@ echo "<tr>
         <td>&nbsp;Cód.&nbsp;</td>
         <td>&nbsp;RA&nbsp;</td>
         <td width='200'>&nbsp;Nome do Aluno&nbsp;</td>
-        <td>Desempenho</td><td></td><td>Pontos</td><td>%</td></tr>";
+        <td>Desempenho</td><td>Acertos</td><td>Nota</td><td>%Acertos</td></tr>";
 
         // Resetando o ponteiro do resultado dos alunos
 mysqli_data_seek($resultadoAlunos, 0);

@@ -641,7 +641,7 @@ font-size: 10px;
 }
 
 .btn-danger {
-  background: #a40b0b;
+  background: #d9232d !important;
 }
 .btn-danger:hover {
   background: #990909;

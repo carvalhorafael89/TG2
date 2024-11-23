@@ -1,6 +1,4 @@
-<?php
-
-echo '<footer>
+<footer>
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-3 col-lg-3">
@@ -89,7 +87,5 @@ echo '<footer>
 
 	
 </body>
-</html>';
-
-?>
+</html>
 

@@ -108,13 +108,7 @@ echo '
           </ul>
         </div>
         <div class="col-md-6">
-        <div id="sb-search" class="sb-search">
-          <form>
-            <input class="sb-search-input" placeholder="Digite o termo para pesquisa..." type="text" value="" name="search" id="search">
-            <input class="sb-search-submit" type="submit" value="">
-            <span class="sb-icon-search" title="Clique para iniciar a busca"></span>
-          </form>
-        </div>
+        
         </div>
       </div>
     </div>

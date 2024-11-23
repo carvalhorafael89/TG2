@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 // Ativa o bloco que conecta ao banco de dados
 require_once 'conecta.php';
@@ -49,10 +49,10 @@ $erroClasse = ($acesso == "denied") ? 'border-danger' : '';
                         <input type="password" name="senha" id="senha" class="form-control input-lg <?php echo $erroClasse; ?>" placeholder="Senha" tabindex="5">
                     </div>
 
-                    <div class="row mb-4">
-                        <div class="col-xs-4 col-sm-3 col-md-3">
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-3 col-md-3 pb-6">
                             <span class="button-checkbox">
-                                <button type="button" class="btn" data-color="info" tabindex="7">Lembrar-me</button>
+                                <button type="button" class="btn" data-color="danger" tabindex="7">Lembrar-me</button>
                                 <input type="checkbox" name="t_and_c" id="t_and_c" class="hidden" value="1">
                             </span>
                         </div>

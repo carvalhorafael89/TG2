@@ -12,7 +12,7 @@ if (isset($_COOKIE['Nivel'])) {
     $nome = $_COOKIE['Nome'];
     $Email = $_COOKIE['Email'];
     $codigo = $_COOKIE['Codigo'];
-    $codigo_aluno = $codigo;
+    $codigo_aluno = $codigo;    
 
     if ($nivel == 'Professor') {
 ?>
@@ -86,7 +86,7 @@ if (isset($_COOKIE['Nivel'])) {
                         </div>
 
                         <div class="mb-4">
-                            <label for="professor" class="form-label">Professor:</label>
+                            <label for="professor" class="form-label">Professor: </label>
                             <input type="text" name="professor" class="form-control" id="professor" value="<?php echo $nome; ?>" readonly>
                         </div>
 

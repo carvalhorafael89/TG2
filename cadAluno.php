@@ -11,7 +11,35 @@ $cpfErrorStyle = '';
 
 // Inicializa a variável $ra como vazia se não estiver definida
 $ra = isset($_GET['ra']) ? $_GET['ra'] : '';
-$cpf = isset($_GET['cpf']) ? $_GET['cpf'] : '';
+$cpf = '';
+$nome = '';
+$senha = '';
+$email ='';
+$curso ='';
+$semestre = '';
+$ano = '';
+$senha = '';
+
+
+if($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+    
+    $queryAlunoData = "SELECT * FROM cadastro_alunos WHERE RA='$ra'";
+    $resultadoAlunoData = mysqli_query($con, $queryAlunoData);
+
+    while($aluno = mysqli_fetch_array($resultadoAlunoData)){
+        $ra = $aluno['RA'];
+        $nome = $aluno['Nome'];
+        $email = $aluno['EMail'];
+        $curso = $aluno['Curso'];
+        $semestre = $aluno['Semestre'];    
+        $ano = $aluno['Ano'];
+        $senha = $aluno['Senha'];
+        
+    }
+
+}
+
 
 // Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -26,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $cpfErrorStyle = 'border: 2px solid red;';
     } else {
 // Verifica se o RA foi passado como parâmetro na URL ou inicializa como vazio
-$ra = isset($_GET['ra']) ? $_GET['ra'] : '';
+        // $ra = isset($_GET['ra']) ? $_GET['ra'] : '';
 
         if (mysqli_num_rows($result) > 0) {
             // RA ou CPF já existe no banco
@@ -116,27 +144,27 @@ $ra = isset($_GET['ra']) ? $_GET['ra'] : '';
                         <!-- Outros dados do aluno -->
                         <tr>
                             <td> Nome:</td>
-                            <td><input type="text" name="nome" size="50"></td>
+                            <td><input type="text" name="nome" size="50" value="<?=  $nome; ?>"> </td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
                         <!-- Senha -->
                         <tr>
                             <td> Senha de acesso:</td>
-                            <td><input type="password" name="senha" size="12"></td>
+                            <td><input type="password" name="senha" size="12" value="<?= $senha; ?>"></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
                         <!-- Confirmar Senha -->
                         <tr>
                             <td> Repita a senha:</td>
-                            <td><input type="password" name="confirma_senha" size="12"></td>
+                            <td><input type="password" name="confirma_senha" size="12" value="<?= $senha; ?>"></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
                         <tr>
                             <td> E-Mail:</td>
-                            <td><input type="text" name="email" size="50"></td>
+                            <td><input type="email" name="email" size="50" value="<?= $email; ?>"></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
@@ -159,7 +187,10 @@ $ra = isset($_GET['ra']) ? $_GET['ra'] : '';
                             <td><select name="semestre">
                                 <?php
                                     $i = 1;
-                                    do { echo "<option>".$i."o. Semestre</option>"; } while ($i++ < 9);
+                                    do { 
+                                        $selected = $semestre == $i ? "selected" : "";
+                                        echo "<option " . $selected. ">".$i."o. Semestre</option>"; 
+                                    } while ($i++ < 9);
                                 ?>
                             </select></td>
                         </tr>
@@ -170,7 +201,10 @@ $ra = isset($_GET['ra']) ? $_GET['ra'] : '';
                             <td><select name="ano">
                                 <?php
                                     $i = 2010;
-                                    do { echo "<option>$i</option>"; } while ($i++ < 2030);
+                                    do { 
+                                        $selected = $ano == $i ? "selected" : "";
+                                        echo "<option " . $selected. ">$i</option>"; 
+                                    } while ($i++ < 2030);
                                 ?>
                             </select></td>
                         </tr>

@@ -1,156 +1,151 @@
 <?php
 if (!isset($_COOKIE['Nivel'])) {
-    $voltar = "login.php?acesso=denied";
-    header("Location: $voltar");
+    header("Location: login.php?acesso=denied");
     exit;
 }
 
-// Ativa o bloco que conecta ao banco de dados
 require_once 'conecta.php';
 
 if (isset($_COOKIE['Nivel'])) {
-    $nivel = $_COOKIE['Nivel'];
-    $nome = $_COOKIE['Nome'];
-    $Email = $_COOKIE['Email'];
-    $codigo = $_COOKIE['Codigo'];
-    $codigo_aluno = $codigo;
-    
-    // Definindo os headers para download de arquivo .xls
+    // Informações do usuário
+    $nivel = isset($_COOKIE['Nivel']) ? $_COOKIE['Nivel'] : '';
+    $nome = isset($_COOKIE['Nome']) ? $_COOKIE['Nome'] : '';
+    $email = isset($_COOKIE['Email']) ? $_COOKIE['Email'] : '';
+    $codigo = isset($_COOKIE['Codigo']) ? $_COOKIE['Codigo'] : '';
+
+    // Headers para exportação do arquivo Excel
     header("Content-Type: application/vnd.ms-excel");
     header("Content-Disposition: attachment; filename=rel_geral.xls");
     header("Pragma: no-cache");
     header("Expires: 0");
 
-    echo "<table border='1'>";
-
+    // Verifica se o código da prova foi fornecido
     if (isset($_GET['codigo_prova'])) {
         $codigo_prova = $_GET['codigo_prova'];
-        
-        // Cabeçalho da planilha
-        echo "<tr><th colspan='9' style='width: 100px; background-color: #B20000; color: white;'>". utf8_decode("RELATÓRIO GERAL") . "</th>";
+
+        // Inicializa o HTML da tabela
+        echo "<table border='1'>";
+
+        // Cabeçalho do relatório
+        echo "<tr><th colspan='9' style='width: 1000px; background-color: #B20000; color: white;'>RELATÓRIO GERAL</th></tr>";
         echo "<tr>
-                <th style='width: 100px; background-color: #B20000; color: white;'>Codigo do Aluno</th>
-                <th style='width: 100px; background-color: #B20000; color: white;'>RA</th>
-                <th style='width: 200px; background-color: #B20000; color: white;'>Nome do Aluno</th>";
-        
-        // Adiciona as questões ao cabeçalho e armazena a ordem das questões em um array
+                <th style='background-color: #B20000; color: white;'>Código do Aluno</th>
+                <th style='background-color: #B20000; color: white;'>RA</th>
+                <th style='background-color: #B20000; color: white;'>Nome do Aluno</th>";
 
-        $numeroQuestao = 1; // Inicializa a variável
+        // Recupera as questões da prova
+        $questoesOrdem = [];
         $queryQuestoes = "SELECT * FROM tabela_questoes WHERE Codigo_Prova='$codigo_prova' ORDER BY Questao";
-$resultadoQuestoes = mysqli_query($con, $queryQuestoes);
+        $resultadoQuestoes = mysqli_query($con, $queryQuestoes);
 
-if (!$resultadoQuestoes) {
-    die("Erro na consulta de questões: " . mysqli_error($con));
-}
+        if (!$resultadoQuestoes) {
+            die("Erro na consulta de questões: " . mysqli_error($con));
+        }
 
-while ($questao = mysqli_fetch_array($resultadoQuestoes)) {
-    $questoesOrdem[] = $questao['Questao'];
-    echo "<th style='width: 100px; background-color: #B20000; color: white;'>" . utf8_decode("Questão $numeroQuestao") . "</th>";
-    $numeroQuestao++;
-}
-        
-        echo "<th style='width: 100px; background-color: #B20000; color: white; text-align: center;'>Numero de Acertos</th>";
-        echo "<th style='width: 100px; background-color: #B20000; color: white; text-align: center;'>Nota</th>";
-        echo "<th style='width: 100px; background-color: #B20000; color: white; text-align: center;'>% de Acertos</th>";
+        // Adiciona as colunas das questões ao cabeçalho
+        $numeroQuestao = 1;
+        while ($questao = mysqli_fetch_assoc($resultadoQuestoes)) {
+            $questoesOrdem[] = $questao['Questao'];
+            echo "<th style='background-color: #B20000; color: white;'>Questão $numeroQuestao</th>";
+            $numeroQuestao++;
+        }
+
+        echo "<th style='background-color: #B20000; color: white;'>Número de Acertos</th>";
+        echo "<th style='background-color: #B20000; color: white;'>Nota</th>";
+        echo "<th style='background-color: #B20000; color: white;'>% de Acertos</th>";
         echo "</tr>";
 
         // Adiciona a linha do gabarito
-        echo "<tr><td colspan='3' style='text-align: center; width: 100px; background-color: #B20000; color: white;'>Gabarito</td>";
+        echo "<tr><td colspan='3' style='text-align: center; background-color: #ffff00; color: white;'>Gabarito</td>";
         foreach ($questoesOrdem as $questaoId) {
-            $queryCorreta = "SELECT * FROM cadastro_questoes WHERE Codigo='$questaoId'";
+            $queryCorreta = "SELECT Correta FROM cadastro_questoes WHERE Codigo='$questaoId'";
             $resultadoCorreta = mysqli_query($con, $queryCorreta);
-            $corretaData = mysqli_fetch_assoc($resultadoCorreta);
-            $correta = isset($corretaData['Correta']) ? $corretaData['Correta'] : '';
+            $correta = (isset($resultadoCorreta) && $resultadoCorreta) ? mysqli_fetch_assoc($resultadoCorreta)['Correta'] : '';
             echo "<td style='background-color: #3ACF1F; text-align: center;'>$correta</td>";
         }
-        echo "<td style='background-color: #DADADA; text-align: center;'></td>";
-        echo "<td style='background-color: #DADADA; text-align: center;'></td>";
-        echo "<td style='background-color: #DADADA; text-align: center;'></td>";
+        echo "<td colspan='3' style='background-color: #DADADA;'></td></tr>";
 
-        // Adiciona os dados dos alunos
+        // Consulta os alunos que responderam a prova
         $queryAlunos = "SELECT DISTINCT Aluno FROM gabaritos WHERE codprova='$codigo_prova'";
         $resultadoAlunos = mysqli_query($con, $queryAlunos);
-        while ($aluno = mysqli_fetch_array($resultadoAlunos)) {
+
+        $notas = [];
+        $acertos = [];
+        $somaAcertos = array_fill(0, count($questoesOrdem), 0); // Inicializa o contador de acertos por questão
+
+        while ($aluno = mysqli_fetch_assoc($resultadoAlunos)) { 
             $codigo_aluno = $aluno['Aluno'];
+
+            // Recupera os dados do aluno
             $queryAlunoData = "SELECT * FROM cadastro_alunos WHERE Codigo='$codigo_aluno'";
             $resultadoAlunoData = mysqli_query($con, $queryAlunoData);
             $alunoData = mysqli_fetch_assoc($resultadoAlunoData);
-            
+
             $nome_aluno = isset($alunoData['Nome']) ? $alunoData['Nome'] : '';
             $ra_aluno = isset($alunoData['RA']) ? $alunoData['RA'] : '';
 
-            echo "<tr style='text-align: center';><td style='background-color: #DADADA;'>$codigo_aluno</td>";
-            echo "<td style='text-align: center; background-color: #DADADA'>$ra_aluno</td>";
-            echo "<td style='text-align: center; background-color: #DADADA'>$nome_aluno</td>";
+            echo "<tr><td style='background-color: #DADADA;'>$codigo_aluno</td>";
+            echo "<td style='background-color: #DADADA;'>$ra_aluno</td>";
+            echo "<td style='background-color: #DADADA;'>$nome_aluno</td>";
 
-            $total_questoes = 0;
-            $pontos = 0;
-
-            // Organiza as respostas do aluno na ordem correta
-            $respostasAluno = array();
-            $queryRespostas = "SELECT * FROM gabaritos WHERE Aluno='$codigo_aluno' AND codprova='$codigo_prova'";
+            // Organiza as respostas do aluno
+            $queryRespostas = "SELECT Questao, Resposta_Aluno FROM gabaritos WHERE Aluno='$codigo_aluno' AND codprova='$codigo_prova'";
             $resultadoRespostas = mysqli_query($con, $queryRespostas);
-            while ($resposta = mysqli_fetch_array($resultadoRespostas)) {
+
+            $respostasAluno = [];
+            while ($resposta = mysqli_fetch_assoc($resultadoRespostas)) {
                 $respostasAluno[$resposta['Questao']] = $resposta['Resposta_Aluno'];
             }
 
-            // Exibe as respostas do aluno de acordo com a ordem das questões
-            foreach ($questoesOrdem as $questaoId) {
+            // Calcula os acertos do aluno
+            $pontos = 0;
+            foreach ($questoesOrdem as $index => $questaoId) {
                 $respostaAluno = isset($respostasAluno[$questaoId]) ? $respostasAluno[$questaoId] : '';
-                $queryCorreta = "SELECT * FROM cadastro_questoes WHERE Codigo='$questaoId'";
+                $queryCorreta = "SELECT Correta FROM cadastro_questoes WHERE Codigo='$questaoId'";
                 $resultadoCorreta = mysqli_query($con, $queryCorreta);
-                $corretaData = mysqli_fetch_assoc($resultadoCorreta);
-                $respostaCorreta = isset($corretaData['Correta']) ? $corretaData['Correta'] : '';
+                $respostaCorreta = (isset($resultadoCorreta) && $resultadoCorreta) ? mysqli_fetch_assoc($resultadoCorreta)['Correta'] : '';
 
                 if ($respostaAluno == $respostaCorreta) {
-                    echo "<td style='background-color: #3ACF1F;'>$respostaAluno</td>";
+                    echo "<td style='background-color: #3ACF1F; text-align: center;'>$respostaAluno</td>";
                     $pontos++;
+                    $somaAcertos[$index]++;
                 } else {
-                    echo "<td style='background-color: #D32719;'>$respostaAluno</td>";
+                    echo "<td style='background-color: #D32719; text-align: center;'>$respostaAluno</td>";
                 }
-                $total_questoes++;
             }
 
-            $nota = $total_questoes > 0 ? round(($pontos / $total_questoes) * 10, 2) : 0;
-            $percentualAcertos = $total_questoes > 0 ? round(($pontos / $total_questoes) * 100, 1) : 0;
+            $nota = round(($pontos / count($questoesOrdem)) * 10, 2);
+            $percentualAcertos = round(($pontos / count($questoesOrdem)) * 100, 2);
 
-            echo "<td style='text-align: center; background-color: #DADADA';>$pontos</td>";
-            echo "<td style='text-align: center; background-color: #DADADA';>$nota</td>";
-            echo "<td style='text-align: center; background-color: #DADADA';>$percentualAcertos%</td>";
+            $notas[] = $nota;
+            $acertos[] = $percentualAcertos;
+
+            echo "<td style='background-color: #DADADA;'>$pontos</td>";
+            echo "<td style='background-color: #DADADA;'>$nota</td>";
+            echo "<td style='background-color: #DADADA;'>$percentualAcertos%</td>";
             echo "</tr>";
         }
 
-        // Adiciona as linhas finais
-        echo "<tr><td colspan='3' style='background-color: #DADADA';>Acertos:</td>";
-        for ($i = 0; $i < $total_questoes; $i++) {
-            $somaAcertos = 0;
-            // Lógica para contar acertos em cada questão
-            mysqli_data_seek($resultadoAlunos, 0); // Resetando o ponteiro
-            while ($aluno = mysqli_fetch_array($resultadoAlunos)) {
-                $codigo_aluno = $aluno['Aluno'];
-                $queryRespostas = "SELECT * FROM gabaritos WHERE Aluno='$codigo_aluno' AND codprova='$codigo_prova' AND Resposta_Aluno=Resposta_Correta";
-                $resultadoContagem = mysqli_query($con, $queryRespostas);
-                $somaAcertos += mysqli_num_rows($resultadoContagem);
-            }
-            echo "<td style='background-color: #DADADA'>$somaAcertos</td>";
+        // Adiciona as médias e percentuais
+        echo "<tr><td colspan='3' style='background-color: #DADADA;'>Acertos:</td>";
+        foreach ($somaAcertos as $totalAcertos) {
+            echo "<td style='background-color: #DADADA; text-align: center;'>$totalAcertos</td>";
         }
-        echo "<td style='background-color: #DADADA; text-align: center;'></td>";
-        echo "<td style='background-color: #DADADA; text-align: center;'></td>";
-        echo "<td style='background-color: #DADADA; text-align: center;'></td>";
-        //echo "<td colspan='3'></td></tr>";
+        echo "<td colspan='3' style='background-color: #DADADA;'></td></tr>";
 
-        echo "<tr><td colspan='3' style='background-color: #DADADA';>%Acertos:</td>";
-        for ($i = 0; $i < $total_questoes; $i++) {
-            $percentual = $somaAcertos > 0 ? round(($somaAcertos / mysqli_num_rows($resultadoAlunos)) * 100, 0) : 0;
-            echo "<td style='background-color: #DADADA'>$percentual%</td>";
+        echo "<tr><td colspan='3' style='background-color: #DADADA;'>% de Acertos:</td>";
+        foreach ($somaAcertos as $totalAcertos) {
+            $percentual = round(($totalAcertos / mysqli_num_rows($resultadoAlunos)) * 100, 2);
+            echo "<td style='background-color: #DADADA; text-align: center;'>$percentual%</td>";
         }
-        echo "<td colspan='3' style='background-color: #DADADA'></td></tr>";
+        echo "<td colspan='3' style='background-color: #DADADA;'></td></tr>";
 
         // Fecha a tabela
         echo "</table>";
+    } else {
+        echo "Código da prova não fornecido.";
     }
 } else {
-    $voltar = "login.php";
-    header("Location: $voltar");
+    header("Location: login.php");
 }
 ?>

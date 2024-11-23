@@ -6,8 +6,6 @@
   require_once 'conecta.php';
   include 'cabecalho.php';
 ?>
-
-
   <!-- end header -->
   <section id="featured" class="bg">
   <!-- start slider -->
@@ -25,7 +23,7 @@
         <li>
             <img src="img/slides/flexslider/1.jpg" alt="" />
             <div class="flex-caption">
-                <?php if ($nivel == "Professor") { // Verifica se o usuário é professor ?>
+                <?php if ($nivel == "Professor" && !$modo_aluno) { // Verifica se o usuário é professor ?>
                     <h3>Cadastre sua prova</h3>
                     <p>Use o sistema de cadastro para gerar seu simulado</p>
                     <a href="cadprova.php" class="btn btn-theme">Cadastrar</a>
@@ -40,7 +38,7 @@
         <li>
             <img src="img/slides/flexslider/2.jpg" alt="" />
             <div class="flex-caption">
-                <?php if ($nivel == "Professor") {  ?>
+                <?php if ($nivel == "Professor" && !$modo_aluno) {  ?>
                     <h3>Cadastre seu aluno</h3>
                     <p>É necessário o cadastro dos alunos para a realização dos simulados</p>
                     <a href="cadAluno.php" class="btn btn-theme">Cadastrar Aluno</a>
@@ -55,7 +53,7 @@
         <li>
             <img src="img/slides/flexslider/3.jpg" alt="" />
             <div class="flex-caption">
-                <?php if ($nivel == "Professor") {  ?>
+                <?php if ($nivel == "Professor" && !$modo_aluno) {  ?>
                     <h3>Não esqueça!</h3>
                     <p>Forneça o código da prova para seus alunos que irão realizar o simulado</p>
                    
@@ -78,7 +76,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="cta-text">
-                    <?php if ($nivel == "Professor") { // Mostra esta seção apenas se o usuário for um professor ?>
+                    <?php if ($nivel == "Professor"  && !$modo_aluno) { // Mostra esta seção apenas se o usuário for um professor ?>
                         <h2>Professor, inclua a sua prova para a realização dos testes</h2>
                         <p><h3>Não esqueça de fornecer o código para seus alunos</h3></p>
                         <a href="cadprova.php" class="btn btn-theme btn-lg">Cadastrar Prova <i class="fa fa-angle-right"></i></a>
@@ -328,7 +326,7 @@
               </div>
               <div class="tab-pane" id="two">
                 <p><img src="img/dummy1.jpg" class="pull-right" alt="" />
-                   Tale dolor mea ex, te enim assum suscipit cum, vix aliquid omittantur in. Duo eu cibo dolorum menandri, nam sumo dicit admodum ei. Ne mazim commune honestatis cum, mentitum phaedrum sit et.
+                   Tale dolor mea ex, te enim assum suscipit cum, vix aliquid omittantur in. Duo eu cibo dolorum menandri, nam sumo dicit adFm ei. Ne mazim commune honestatis cum, mentitum phaedrum sit et.
                 </p>
                 <p>Lorem ipsum dolor sit amet, vel laoreet pertinacia at, nam ea ornatus ocurreret gubergren. Per facete graecis eu.</p>
               </div>
