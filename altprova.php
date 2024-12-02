@@ -8,6 +8,8 @@ if (!isset($_COOKIE['Nivel'])) {
 // Ativa o bloco que conecta ao banco de dados
 require_once 'conecta.php';
 
+$mensagem_erro = ""; // Variável para armazenar a mensagem de erro
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $codigo_prova = $_POST['prova'];
 
@@ -23,37 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: inccquestao.php?prova=$codigo_prova&modo=inserir");
             exit();
         } else {
-            // Se a prova não existir, exibe mensagem de erro
-            echo "<script>
-                alert('Código da prova inválido. Tente novamente.');
-                window.location.href = 'altprova.php';
-            </script>";
-            exit(); // Termina a execução após o alerta
+            // Se a prova não existir, define a mensagem de erro
+            $mensagem_erro = "Código da prova inválido. Tente novamente.";
         }
 
         $stmt_prova->close();
     } else {
-        echo "<p style='color:red;'>Erro na preparação da consulta do código da prova. Tente novamente.</p>";
+        $mensagem_erro = "Erro ao preparar a consulta. Tente novamente.";
     }
 }
 
 include 'cabecalho.php'; // Inclui o cabeçalho somente após a verificação
 ?>
-
-<!-- Página de Alteração de Prova adaptada ao layout de login -->
-<section id="inner-headline">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <ul class="breadcrumb">
-                    <li><a href="index.php"><i class="fa fa-home"></i></a><i class="icon-angle-right"></i></li>
-                    <li><a href="index.php">Professor</a><i class="icon-angle-right"></i></li>
-                    <li class="active">Alterar Prova/Simulados</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
 
 <section id="content">
     <div class="container">
@@ -63,7 +46,9 @@ include 'cabecalho.php'; // Inclui o cabeçalho somente após a verificação
                     <h2>Seleção de Prova: <small>Digite o código da prova que deseja alterar.</small></h2>
                     <div class="form-group">
                         <input type="text" name="prova" id="prova" class="form-control input-lg" placeholder="Código da Prova" required>
-                        <input type="hidden" name="codigo_aluno" value="<?php echo $codigo_aluno; ?>">
+                        <?php if (!empty($mensagem_erro)): ?>
+                            <small class="text-danger"><?php echo $mensagem_erro; ?></small>
+                        <?php endif; ?>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-md-6">

@@ -169,8 +169,6 @@ if ($nivel == "Aluno" || $modo_aluno) {
               <li><a href="cadprova.php">Criar nova prova ou simulado</a></li>
               <li><a href="altprova.php">Alterar prova ou simulado</a></li>
               <li><a href="delprova.php">Excluir prova ou simulado</a></li>
-              <li><a href="realiza.php">Testar prova ou simulado</a></li>
-              <li><a href="rel6.php">Encerra todas as provas em andamento</a></li>
           </ul>  
         </li>
         <li class="dropdown-submenu">

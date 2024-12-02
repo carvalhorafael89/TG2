@@ -48,15 +48,6 @@ $erroClasse = ($acesso == "denied") ? 'border-danger' : '';
                     <div class="form-group">
                         <input type="password" name="senha" id="senha" class="form-control input-lg <?php echo $erroClasse; ?>" placeholder="Senha" tabindex="5">
                     </div>
-
-                    <div class="row">
-                        <div class="col-xs-4 col-sm-3 col-md-3 pb-6">
-                            <span class="button-checkbox">
-                                <button type="button" class="btn" data-color="danger" tabindex="7">Lembrar-me</button>
-                                <input type="checkbox" name="t_and_c" id="t_and_c" class="hidden" value="1">
-                            </span>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-xs-2 col-md-6">
                             <input type="submit" value="Entrar" class="btn btn-primary btn-block btn-lg" tabindex="6">

@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         
         <?php if ($erro_codigo): ?>
             <p style="color: red;"><?php echo $erro_codigo; ?></p>
-        <?php endif; ?>
+        <?php endif; ?> 
 
         <input type="hidden" name="codigo_aluno" value="<?php echo $codigo_aluno; ?>">
       </div>

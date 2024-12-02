@@ -8,6 +8,9 @@ if (!isset($_COOKIE['Nivel'])) {
 // Ativa o bloco que conecta ao banco de dados
 require_once 'conecta.php';
 
+$mensagem_sucesso = "";
+$mensagem_erro = [];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $codigo_prova = $_POST['prova'];
 
@@ -21,53 +24,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt_prova->num_rows > 0) {
             // Exclui todas as entradas relacionadas ao código da prova em todas as tabelas necessárias
             $tables = ['gabaritos', 'tabela_questoes', 'cadastro_provas']; // Adicione mais tabelas conforme necessário
-            $erros = [];
 
             foreach ($tables as $table) {
                 $sql_delete = "DELETE FROM $table WHERE codigo_prova = ?";
                 if ($stmt_delete = $con->prepare($sql_delete)) {
                     $stmt_delete->bind_param("s", $codigo_prova);
                     if (!$stmt_delete->execute()) {
-                        $erros[] = "Erro ao excluir da tabela $table: " . $stmt_delete->error;
+                        $mensagem_erro[] = "Erro ao excluir da tabela $table: " . $stmt_delete->error;
                     }
                     $stmt_delete->close();
                 } else {
-                    $erros[] = "Erro na preparação da consulta de exclusão para a tabela $table: " . $con->error;
+                    $mensagem_erro[] = "Erro na preparação da consulta de exclusão para a tabela $table: " . $con->error;
                 }
             }
 
-            if (empty($erros)) {
-                echo "<script>
-                    alert('Prova e todos os dados relacionados foram excluídos com sucesso.');
-                    window.location.href = 'index.php';
-                </script>";
-            } else {
-                echo "<p style='color: red;'>Ocorreram os seguintes erros durante a exclusão:</p>";
-                echo "<ul style='color: red;'>";
-                foreach ($erros as $erro) {
-                    echo "<li>$erro</li>";
-                }
-                echo "</ul>";
+            if (empty($mensagem_erro)) {
+                $mensagem_sucesso = "Prova e todos os dados relacionados foram excluídos com sucesso.";
             }
         } else {
-            // Se a prova não existir, exibe mensagem de erro
-            echo "<script>
-                alert('Código da prova inválido. Tente novamente.');
-                window.location.href = 'delprova.php';
-            </script>";
-            exit(); // Termina a execução após o alerta
+            // Se a prova não existir, define mensagem de erro
+            $mensagem_erro[] = "Código da prova inválido. Tente novamente.";
         }
 
         $stmt_prova->close();
     } else {
-        echo "<p style='color:red;'>Erro na preparação da consulta do código da prova. Tente novamente.</p>";
+        $mensagem_erro[] = "Erro ao preparar a consulta. Tente novamente.";
     }
 }
 
 include 'cabecalho.php'; // Inclui o cabeçalho somente após a verificação
 ?>
 
-<!-- Página de Exclusão de Prova adaptada ao layout de altprova -->
 <section id="inner-headline">
     <div class="container">
         <div class="row">
@@ -88,6 +75,20 @@ include 'cabecalho.php'; // Inclui o cabeçalho somente após a verificação
             <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-0">
                 <form role="form" class="register-form" method="POST" action="delprova.php">
                     <h2>Excluir Prova: <small>Digite o código da prova que deseja excluir. <br><strong style="color: red;">Aviso: Esta ação é irreversível e irá apagar todos os dados associados à prova.</strong></small></h2>
+                    <?php if (!empty($mensagem_sucesso)): ?>
+                        <div class="alert alert-success">
+                            <?php echo $mensagem_sucesso; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($mensagem_erro)): ?>
+                        <div class="alert alert-danger">
+                            <ul>
+                                <?php foreach ($mensagem_erro as $erro): ?>
+                                    <li><?php echo $erro; ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
                     <div class="form-group">
                         <input type="text" name="prova" id="prova" class="form-control input-lg" placeholder="Código da Prova" required>
                     </div>

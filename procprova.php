@@ -13,13 +13,13 @@ include 'cabecalho.php';
 if (isset($_COOKIE['Nivel'])) {
     $nivel = $_COOKIE['Nivel'];
     $nome = $_COOKIE['Nome'];
-    $Email = $_COOKIE['Email'];
+    $email = $_COOKIE['Email'];
     $codigo = $_COOKIE['Codigo'];
     $codigo_aluno = $codigo;
                     
-    if ($nivel == 'Professor') {
+    if ($nivel === 'Professor') {
 ?>
-<!-- end header -->
+<!-- Cabeçalho -->
 <section id="inner-headline">
   <div class="container">
     <div class="row">
@@ -33,25 +33,31 @@ if (isset($_COOKIE['Nivel'])) {
     </div>
   </div>
 </section>
-        
+
+<!-- Conteúdo -->
 <section id="content">
 <div class="container">
 <div class="row">
     <div class="col-lg-12">
         
         <?php
-        if (isset($_POST['titulo'])) {
-            $titulo = $_POST['titulo'];
-            $codigo = $_POST['codigo'];
-            $disciplina = $_POST['disciplina'];
-            $professor = $_POST['professor'];
-            $horas = $_POST['horas'];
-            $minutos = $_POST['minutos'];
-            $codigoacesso = $_POST['codigoacesso'];
-            $quantidade = $_POST['quantidade'];
-            $descricao = $_POST['descricao'];
+        // Verifica se o formulário foi enviado
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Captura e sanitiza os dados do formulário
+            $titulo = mysqli_real_escape_string($con, $_POST['titulo']);
+            $codigo = mysqli_real_escape_string($con, $_POST['codigo']);
+            $disciplina = mysqli_real_escape_string($con, $_POST['disciplina']);
+            $professor = mysqli_real_escape_string($con, $_POST['professor']);
+            $horas = (int)$_POST['horas'];
+            $minutos = (int)$_POST['minutos'];
+            $codigoacesso = mysqli_real_escape_string($con, $_POST['codigoacesso']);
+            $quantidade = (int)$_POST['quantidade'];
+            $descricao = mysqli_real_escape_string($con, $_POST['descricao']);
             
-            $sql = "INSERT INTO cadastro_provas (Titulo, Codigo_Prova, Disciplina, Professor, Duracao_Horas, Duracao_Minutos, Codigo_Acesso, Numero_Questoes, Descricao) VALUES ('$titulo', '$codigo', '$disciplina', '$professor', '$horas', '$minutos', '$codigoacesso', '$quantidade', '$descricao')";
+            // Insere os dados no banco de dados
+            $sql = "INSERT INTO cadastro_provas 
+                    (Titulo, Codigo_Prova, Disciplina, Professor, Duracao_Horas, Duracao_Minutos, Codigo_Acesso, Numero_Questoes, Descricao) 
+                    VALUES ('$titulo', '$codigo', '$disciplina', '$professor', $horas, $minutos, '$codigoacesso', $quantidade, '$descricao')";
             
             if (mysqli_query($con, $sql)) {
         ?>
@@ -64,21 +70,21 @@ if (isset($_COOKIE['Nivel'])) {
             } else {
         ?>
             <h1>Ocorreu uma falha no cadastro de dados.</h1>
-            <p></p>
+            <p>Erro: <?php echo mysqli_error($con); ?></p>
         <?php
             }
         } else {
         ?>
             <h1>Ocorreu uma falha no envio dos dados do formulário.</h1>
-            <p></p>
+            <p>Por favor, tente novamente.</p>
         <?php
-        } // fecha else
+        }
     }
 }
 ?>
 
-            </div> <!-- #main -->
-        </div> <!-- #main-container -->
+    </div> <!-- #main -->
+</div> <!-- #main-container -->
 </div>
 </section>
 

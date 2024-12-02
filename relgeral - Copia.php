@@ -71,7 +71,7 @@ if (isset($_COOKIE['Nivel'])) {
             $numero_questao++;
         }
         echo "<td></td><td>&nbsp;Acertos&nbsp;</td><td>Nota</td><td>&nbsp;%Acertos&nbsp;</td>";
-        echo "</tr>";
+        echo "</tr>";   
 
         // Linha do gabarito
         echo "<tr>
