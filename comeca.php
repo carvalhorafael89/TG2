@@ -32,27 +32,10 @@ if ($is_professor_em_modo_aluno) {
     $finalizado = isset($_GET['finalizado']) && $_GET['finalizado'] === 'Sim';
 }
 
-    if (isset($_GET['codigo_prova']) && isset($_GET['codigo_aluno'])) {
-        $codigo_prova = $_GET['codigo_prova'];
-        $codigo_aluno = $_GET['codigo_aluno'];
-        $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
-
-        // Buscar duração da prova no banco de dados
-    $sql_duracao = "SELECT Duracao_Horas, Duracao_Minutos FROM cadastro_provas WHERE Codigo_Prova = '$codigo_prova'";
-    $resultado_duracao = mysqli_query($con, $sql_duracao);
-    $duracao_horas = 0;
-    $duracao_minutos = 0;
-
-    if ($resultado_duracao && $dados_duracao = mysqli_fetch_assoc($resultado_duracao)) {
-        $duracao_horas = (int)$dados_duracao['Duracao_Horas'];
-        $duracao_minutos = (int)$dados_duracao['Duracao_Minutos'];
-    }
-
-    // Calcular o tempo total em segundos
-    $tempo_total_segundos = ($duracao_horas * 3600) + ($duracao_minutos * 60);
-
-    
-
+if (isset($_GET['codigo_prova']) && isset($_GET['codigo_aluno'])) {
+    $codigo_prova = $_GET['codigo_prova'];
+    $codigo_aluno = $_GET['codigo_aluno'];
+    $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
 
     // Obter a lista de IDs das questões da prova
     $sql_questao_ids = "SELECT Questao FROM tabela_questoes WHERE Codigo_Prova = '$codigo_prova' ORDER BY Questao";
@@ -133,45 +116,6 @@ if ($resultado_resposta_correta && $resposta_dados = mysqli_fetch_assoc($resulta
     $sql_questao_atual = "SELECT * FROM tabela_questoes WHERE Questao = $numero_para_busca AND Codigo_Prova = '$codigo_prova'";
     $data_questao = mysqli_query($con, $sql_questao_atual);
 
-    // Exibir cronômetro
-// Exibir cronômetro
-        // Exibir cronômetro
-        echo "<div id='cronometro' style='font-size: 24px; color: red; text-align: center; margin-bottom: 20px;'></div>";
-
-        echo "<script>
-            let tempoRestante = $tempo_total_segundos;
-
-            function formatarTempo(tempo) {
-                const horas = Math.floor(tempo / 3600);
-                const minutos = Math.floor((tempo % 3600) / 60);
-                const segundos = tempo % 60;
-
-                return 'Tempo Restante: ' + 
-                    String(horas).padStart(2, '0') + ':' + 
-                    String(minutos).padStart(2, '0') + ':' + 
-                    String(segundos).padStart(2, '0');
-            }
-
-            function atualizarCronometro() {
-                const cronometro = document.getElementById('cronometro');
-                cronometro.innerText = formatarTempo(tempoRestante);
-
-                if (tempoRestante <= 0) {
-                    clearInterval(intervaloCronometro);
-                    window.location.href = 'finalprv.php?codigo_prova=$codigo_prova&codigo_aluno=$codigo_aluno';
-                }
-
-                tempoRestante--;
-            }
-
-            // Exibir o tempo inicial imediatamente
-            document.getElementById('cronometro').innerText = formatarTempo(tempoRestante);
-
-            // Atualizar o cronômetro a cada segundo
-            const intervaloCronometro = setInterval(atualizarCronometro, 1000);
-        </script>";
-
-
     if ($data_questao && $dados_questao = mysqli_fetch_assoc($data_questao)) {
         $resposta = isset($dados_questao['Resposta_Aluno']) ? $dados_questao['Resposta_Aluno'] : '';
         $rcorreta = isset($dados_questao['Resposta_Correta']) ? $dados_questao['Resposta_Correta'] : '';
@@ -188,7 +132,7 @@ if ($resultado_resposta_correta && $resposta_dados = mysqli_fetch_assoc($resulta
             echo "<div style='margin-right: 200px;'>";
             echo "<h2><small>Questão $numero_exibido de $total_questoes</small></h2>";
             echo "<h3><small>Disciplina: " . htmlspecialchars($questao_texto['Disciplina']) . "</small></h3><br>";
-            echo "<h3><small>" . nl2br(htmlspecialchars($questao_texto['Questao'])) . "</small></h3><br>";
+            echo "<h3><small>" . htmlspecialchars($questao_texto['Questao']) . "</small></h3><br>";
 
             if (!empty($questao_texto['Figura']) && $questao_texto['Figura'] != 'figuras/') {
                 echo "<a href=\"" . htmlspecialchars($questao_texto['Figura']) . "\" target=\"_blank\"><img src=\"" . htmlspecialchars($questao_texto['Figura']) . "\" width=\"800\"></a>";
@@ -226,32 +170,50 @@ if ($dados_questao) {
         echo "</small></h4></td></tr></table>";
     }
 }
+
             // Botão de resposta e navegação
-            echo "<div style='margin-top: 20px; display: flex; justify-content: space-between;'>";
+echo "<div style='margin-top: 20px;'>";
+if (!$finalizado || $is_professor_em_modo_aluno) {
+    if ($numero_exibido < $total_questoes) {
+        echo "<button type='submit' class='btn btn-success'>Responder e Avançar</button>";
+    } else {
+        // Botão para finalizar a prova com um formulário de redirecionamento correto
+        echo "<form method='POST' action='finalprv.php' style='display:inline;'>";
+        echo "<input type='hidden' name='codigo_prova' value='$codigo_prova'>";
+        echo "<input type='hidden' name='codigo_aluno' value='$codigo_aluno'>";
+        echo "<button type='submit' class='btn btn-success'>Finalizar Prova</button>";
+        echo "</form>";
+    }
+} else {
+// Mostrar seletor de perguntas
+echo "<div style='text-align: center;'>";
+echo "<label for='navegacao'>Ir para a pergunta:</label><br>";
+echo "<br>";
 
-            // Botão "Voltar", habilitado apenas se não for a primeira questão
-            if ($numero_exibido > 1) {
-                echo "<a href='comeca.php?codigo_prova=" . htmlspecialchars($codigo_prova) . "&codigo_aluno=" . htmlspecialchars($codigo_aluno) . "&numero=" . ($numero_exibido - 1) . "' class='btn btn-secondary' style='width: 150px;'>Voltar</a>";
-            } else {
-                // Botão invisível para manter alinhamento
-                echo "<span style='width: 150px;'></span>";
-            }
+for ($i = 1; $i <= $total_questoes; $i++) {
+    // Estilo do botão para a pergunta atual
+    $style = $i == $numero_exibido
+        ? "background-color: red; color: white; border: none; padding: 10px 15px; margin: 2px; cursor: pointer;" 
+        : "background-color: gray; color: white; border: none; padding: 10px 15px; margin: 2px; cursor: pointer;";
 
-            // Botão "Avançar" ou "Finalizar Prova"
-            if ($numero_exibido < $total_questoes) {
-                // Botão "Avançar"
-                echo "<button type='submit' name='proxima' class='btn btn-success' style='width: 150px;'>Avançar</button>";
-            } else {
-                // Botão "Finalizar Prova"
-                echo "<form method='POST' action='finalprv.php' style='display:inline;'>";
-                echo "<input type='hidden' name='codigo_prova' value='" . htmlspecialchars($codigo_prova) . "'>";
-                echo "<input type='hidden' name='codigo_aluno' value='" . htmlspecialchars($codigo_aluno) . "'>";
-                echo "<button type='submit' class='btn btn-success' style='width: 150px;'>Finalizar Prova</button>";
-                echo "</form>";
-            }
+    // Adiciona os parâmetros corretos na URL para navegar entre as questões
+    echo "<a href='comeca.php?codigo_prova=" . htmlspecialchars($codigo_prova) . "&codigo_aluno=" . htmlspecialchars($codigo_aluno) . "&numero=$i&finalizado=" . ($finalizado ? 'Sim' : 'Nao') . "' style='$style'>$i</a>";
+    //echo "<form method='GET' action='comeca.php' style='display:inline;'>";
+    //echo "<input type='hidden' name='codigo_prova' value='" . htmlspecialchars($codigo_prova) . "'>";
+    //echo "<input type='hidden' name='codigo_aluno' value='" . htmlspecialchars($codigo_aluno) . "'>";
+    //echo "<input type='hidden' name='numero' value='$i'>";
+    //echo "<input type='hidden' name='finalizado' value='" . ($finalizado ? 'Sim' : 'Nao') . "'>";
+    //echo "<button type='submit' style='$style'>$i</button>";
+    echo "</form>";
+}
 
-            echo "</div>";
+echo "</div>";
+echo "<br>";
+echo "<br>";
+}
 
+            echo "</div>";  
+            echo "</form>";
         } else {
             echo "<p style='color: red;'>Questão não encontrada.</p>";
         }
@@ -266,3 +228,4 @@ if ($dados_questao) {
 
 // Enviar o buffer de saída e encerrar
 ob_end_flush();
+?>

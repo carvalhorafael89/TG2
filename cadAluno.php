@@ -132,15 +132,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <td><input type="text" name="ra" size="20" value="<?php echo htmlspecialchars($ra); ?>"></td>
                         </tr>
                             <td>&nbsp;</td><td></td></tr>
-                            
-                        
+                                
                         <!-- Campo de CPF -->
                         <tr>
-                            <td> CPF:</td>
-                            <td><input type="text" name="cpf" size="20" value="<?php echo htmlspecialchars($cpf); ?>"></td>
+                        <td> CPF:</td>
+                        <td><input type="text" name="cpf" size="20" value="<?php echo htmlspecialchars($cpf); ?>" required></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
-                        
                         <!-- Outros dados do aluno -->
                         <tr>
                             <td> Nome:</td>
@@ -200,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <td> Ano:</td>
                             <td><select name="ano">
                                 <?php
-                                    $i = 2010;
+                                    $i = 2024;
                                     do { 
                                         $selected = $ano == $i ? "selected" : "";
                                         echo "<option " . $selected. ">$i</option>"; 

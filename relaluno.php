@@ -75,10 +75,9 @@ if (isset($_COOKIE['Nivel']))
                       <td>&nbsp;RA&nbsp;</td>
                       <td width=\"200\">&nbsp;Nome do Aluno&nbsp;</td>";
                   
-                  echo "<td>Desempenho</td><td></td><td>Pontos</td><td>%</td></tr>";
+                  echo "<td>Desempenho</td><td></td><td>Pontos</td><td>%Acertos</td></tr>";
                     
-                    
-                  
+  
                   
                     $lista="select DISTINCT Aluno from gabaritos where codprova='".$codigo_prova."'";
                     $l=mysqli_query($con,$lista);
@@ -94,9 +93,9 @@ if (isset($_COOKIE['Nivel']))
                         $ra_aluno=$temp3['RA'];
                     }
                     echo "<tr>
-                      <td>&nbsp;<a href=\"verifprv.php?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."\" target=\"blank\">$codigo_aluno</a>&nbsp;</td>
-                      <td>&nbsp;<a href=\"verifprv.php?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."\" target=\"blank\">$ra_aluno</a>&nbsp;</td>
-                      <td>&nbsp;<a href=\"verifprv.php?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."\" target=\"blank\">$nome_aluno</a>&nbsp;</td>";
+                      <td>&nbsp;<a =\finalprv.z?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."\" target=\"blank\">$codigo_aluno</a>&nbsp;</td>
+                      <td>&nbsp;<a =\finalprv.z?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."\" target=\"blank\">$ra_aluno</a>&nbsp;</td>
+                      <td>&nbsp;<a =\finalprv.z?codigo_prova=".$codigo_prova."&codigo_aluno=".$codigo_aluno."\" target=\"blank\">$nome_aluno</a>&nbsp;</td>";
                     
                                    
                     $total_questoes=0;
