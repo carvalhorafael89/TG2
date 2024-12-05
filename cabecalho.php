@@ -152,7 +152,7 @@ if ($nivel == "Aluno" || $modo_aluno) {
     </ul>
     </li>
     <li><a href="#">Perfil</a></li>';
-} elseif ($nivel == "Professor") {
+} elseif ($nivel == "Professor" ) {
     echo '<li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Professor <i class="fa fa-angle-down"></i></a>
     <ul class="dropdown-menu">

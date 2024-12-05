@@ -8,23 +8,26 @@ $erro = '';
 $raErrorStyle = '';
 $cpfErrorStyle = '';
 
+
 // Inicializa a variável $ra como vazia se não estiver definida
 $ra = isset($_GET['ra']) ? $_GET['ra'] : '';
 $cpf = '';
 $nome = '';
 $senha = '';
-$email = '';
-$curso = '';
+$email ='';
+$curso ='';
 $semestre = '';
 $ano = '';
+$senha = '';
 
-// Se o método for GET, tenta carregar os dados do aluno
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($ra)) {
+
+if($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+    
     $queryAlunoData = "SELECT * FROM cadastro_alunos WHERE RA='$ra'";
     $resultadoAlunoData = mysqli_query($con, $queryAlunoData);
 
-    if ($aluno = mysqli_fetch_array($resultadoAlunoData)) {
-        // Preenche as variáveis com os dados encontrados
+    while($aluno = mysqli_fetch_array($resultadoAlunoData)){
         $ra = $aluno['RA'];
         $nome = $aluno['Nome'];
         $email = $aluno['EMail'];
@@ -32,32 +35,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($ra)) {
         $semestre = $aluno['Semestre'];    
         $ano = $aluno['Ano'];
         $senha = $aluno['Senha'];
+        
     }
+
 }
 
-// Se o método for POST, tenta salvar ou validar os dados
+
+// Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $ra = isset($_POST['ra']) ? $_POST['ra'] : ''; 
-    $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : ''; 
-    
+    // Captura o valor do RA e do CPF
+    $ra = isset($_POST['ra']) ? $_POST['ra'] : '';
+    $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : '';
+
     // Verifica se RA ou CPF foi preenchido
     if (empty($ra) && empty($cpf)) {
         $erro = "<p style='color:red; font-weight:bold;'>Por favor, preencha RA ou CPF.</p>";
         $raErrorStyle = 'border: 2px solid red;';
         $cpfErrorStyle = 'border: 2px solid red;';
     } else {
-        // Verifica se o RA ou CPF já existe no banco
-        $queryCheck = "SELECT * FROM cadastro_alunos WHERE RA='$ra' OR CPF='$cpf'";
-        $result = mysqli_query($con, $queryCheck);
-        
-        if (mysqli_num_rows($result) > 0) {
-            // RA ou CPF já existe no banco
-            echo "<script>
-                alert('RA ou CPF já cadastrado. Redirecionando para login...');
-                window.location.href = 'login.php';
-            </script>";
-        } else {
-            // Continua com o cadastro completo
+        $queryExistente = "SELECT * FROM cadastro_alunos WHERE RA='$ra'";
+        $resultadoExistente = mysqli_query($con, $queryExistente);
+
+        if (mysqli_num_rows($resultadoExistente) > 0) {
+            // RA já existe, realizar UPDATE
             $nome = $_POST['nome'];
             $email = $_POST['email'];
             $senha = $_POST['senha'];
@@ -68,23 +68,75 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Verificação de senha
             if ($senha !== $confirma_senha) {
-                echo "<p style='color:red; font-weight:bold;'>As senhas não coincidem. Tente novamente.</p>";
+                echo "<p style='color:red;'>As senhas não coincidem. Tente novamente.</p>";
+            } else {
+                // Query de atualização no banco de dados
+                $sql_update = "UPDATE cadastro_alunos 
+                               SET Nome=?, Senha=?, CPF=?, Curso=?, EMail=?, Semestre=?, Ano=? 
+                               WHERE RA=?";
+                
+                if ($stmt = $con->prepare($sql_update)) {
+                    // Bind dos parâmetros
+                    $stmt->bind_param("sssssssi", $nome, $senha, $cpf, $curso, $email, $semestre, $ano, $ra);
+                    
+                    // Executando a query
+                    if ($stmt->execute()) {
+                        echo "<script>
+                            alert('Cadastro atualizado com sucesso!');
+                            window.location.href = 'login.php';
+                        </script>";
+                    } else {
+                        echo "<p style='color:red;'>Erro ao atualizar os dados. Tente novamente.</p>";
+                    }
+
+                    // Fechando o statement
+                    $stmt->close();
+                } else {
+                    echo "<p style='color:red;'>Erro na preparação da query de atualização. Tente novamente.</p>";
+                }
+            }
+        } else {
+            // RA não existe, realizar INSERT
+            $nome = $_POST['nome'];
+            $email = $_POST['email'];
+            $senha = $_POST['senha'];
+            $confirma_senha = $_POST['confirma_senha'];
+            $curso = $_POST['curso'];
+            $semestre = $_POST['semestre'];
+            $ano = $_POST['ano'];
+
+            // Verificação de senha
+            if ($senha !== $confirma_senha) {
+                echo "<p style='color:red;'>As senhas não coincidem. Tente novamente.</p>";
             } else {
                 // Query de inserção no banco de dados
                 $sql_insert = "INSERT INTO cadastro_alunos (Nome, Senha, RA, CPF, Curso, EMail, Semestre, Ano) 
                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
-                // Preparando a query
+                
                 if ($stmt = $con->prepare($sql_insert)) {
                     // Bind dos parâmetros
                     $stmt->bind_param("ssssssis", $nome, $senha, $ra, $cpf, $curso, $email, $semestre, $ano);
-                    $stmt->execute();
-                    echo "<p style='color:green;'>Cadastro realizado com sucesso!</p>";
+                    
+                    // Executando a query
+                    if ($stmt->execute()) {
+                        echo "<script>
+                            alert('Cadastro realizado com sucesso!');
+                            window.location.href = 'login.php';
+                        </script>";
+                    } else {
+                        echo "<p style='color:red;'>Erro ao realizar o cadastro. Tente novamente.</p>";
+                    }
+
+                    // Fechando o statement
+                    $stmt->close();
+                } else {
+                    echo "<p style='color:red;'>Erro na preparação da query de inserção. Tente novamente.</p>";
                 }
             }
         }
     }
 }
+
 ?>
 
 <!-- Formulário de cadastro de alunos -->
@@ -105,103 +157,88 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <!-- Campo de RA -->
                         <tr>
                             <td> RA:</td>
-                            <td><input type="text" name="ra" size="20" value="<?php echo htmlspecialchars($ra); ?>" style="<?php echo $raErrorStyle; ?>"></td>
+                            <td><input type="text" name="ra" size="20" value="<?php echo htmlspecialchars($ra); ?>"></td>
                         </tr>
-                        <tr><td>&nbsp;</td><td></td></tr>
-                            
+                            <td>&nbsp;</td><td></td></tr>
+                                
                         <!-- Campo de CPF -->
                         <tr>
-                            <td> CPF:</td>
-                            <td><input type="text" name="cpf" size="20" value="<?php echo htmlspecialchars($cpf); ?>" required style="<?php echo $cpfErrorStyle; ?>"></td>
+                        <td> CPF:</td>
+                        <td><input type="text" name="cpf" size="20" value="<?php echo htmlspecialchars($cpf); ?>" required></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
-                        
                         <!-- Outros dados do aluno -->
                         <tr>
                             <td> Nome:</td>
-                            <td><input type="text" name="nome" size="50" value="<?php echo htmlspecialchars($nome); ?>"> </td>
+                            <td><input type="text" name="nome" size="50" value="<?=  $nome; ?>"> </td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
                         <!-- Senha -->
                         <tr>
                             <td> Senha de acesso:</td>
-                            <td><input type="password" name="senha" size="12" value=""></td>
+                            <td><input type="password" name="senha" size="12" value="<?= $senha; ?>"></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
                         <!-- Confirmar Senha -->
                         <tr>
                             <td> Repita a senha:</td>
-                            <td><input type="password" name="confirma_senha" size="12" value=""></td>
+                            <td><input type="password" name="confirma_senha" size="12" value="<?= $senha; ?>"></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
-                        <!-- E-Mail -->
                         <tr>
                             <td> E-Mail:</td>
-                            <td><input type="email" name="email" size="50" value="<?php echo htmlspecialchars($email); ?>"></td>
+                            <td><input type="email" name="email" size="50" value="<?= $email; ?>"></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
-                        <!-- Curso -->
                         <tr>
                             <td> Curso:</td>
-                            <td>
-                                <select name="curso">
-                                    <option value="" <?php echo empty($curso) ? 'selected' : ''; ?>>Selecione</option>
-                                    <?php
-                                        $sql = "SELECT * FROM cursos";
-                                        $r = mysqli_query($con, $sql);
-                                        while ($dados = mysqli_fetch_array($r)) {
-                                            $cursoOption = htmlspecialchars($dados['curso']);
-                                            $selected = ($curso === $cursoOption) ? 'selected' : '';
-                                            echo "<option value=\"$cursoOption\" $selected>$cursoOption</option>";
-                                        }
-                                    ?>
-                                </select>
-                            </td>
+                            <td><select name="curso">
+                                <?php
+                                    $sql = "SELECT * FROM cursos";
+                                    $r = mysqli_query($con, $sql);
+                                    while ($dados = mysqli_fetch_array($r)) {
+                                        echo "<option>".$dados['curso']."</option>";
+                                    }
+                                ?>
+                            </select></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
-                        <!-- Semestre -->
                         <tr>
                             <td> Semestre:</td>
-                            <td>
-                                <select name="semestre">
-                                    <option value="" <?php echo empty($semestre) ? 'selected' : ''; ?>>Selecione</option>
-                                    <?php
-                                        for ($i = 1; $i <= 9; $i++) { 
-                                            $selected = ($semestre == $i) ? "selected" : "";
-                                            echo "<option value=\"$i\" $selected>".$i."º Semestre</option>"; 
-                                        }
-                                    ?>
-                                </select>
-                            </td>
+                            <td><select name="semestre">
+                                <?php
+                                    $i = 1;
+                                    do { 
+                                        $selected = $semestre == $i ? "selected" : "";
+                                        echo "<option " . $selected. ">".$i."o. Semestre</option>"; 
+                                    } while ($i++ < 9);
+                                ?>
+                            </select></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
-                        <!-- Ano -->
                         <tr>
                             <td> Ano:</td>
-                            <td>
-                                <select name="ano">
-                                    <option value="" <?php echo empty($ano) ? 'selected' : ''; ?>>Selecione</option>
-                                    <?php
-                                        for ($i = 2024; $i <= 2030; $i++) { 
-                                            $selected = ($ano == $i) ? "selected" : "";
-                                            echo "<option value=\"$i\" $selected>$i</option>"; 
-                                        }
-                                    ?>
-                                </select>
-                            </td>
+                            <td><select name="ano">
+                                <?php
+                                    $i = 2024;
+                                    do { 
+                                        $selected = $ano == $i ? "selected" : "";
+                                        echo "<option " . $selected. ">$i</option>"; 
+                                    } while ($i++ < 2030);
+                                ?>
+                            </select></td>
                         </tr>
                         <tr><td>&nbsp;</td><td></td></tr>
 
-                        <!-- Botão de Envio -->
                         <tr>
                             <td></td>
-                            <td><input type="submit" name="enviar" value="Cadastrar" style="background-color: red; color: white; padding: 10px 20px; border: none; cursor: pointer;"></td>
+                            <td><input type="submit" name="enviar" value="Cadastrar"></td>
                         </tr>
                     </table>
                 </form>
