@@ -4,10 +4,6 @@ if (!isset($_COOKIE['Nivel'])) {
     exit();
 }
 
-// Conecta ao banco de dados
-require_once 'conecta.php';
-include 'cabecalho.php';
-
 // Define o fuso horário
 date_default_timezone_set('America/Sao_Paulo');
 
@@ -15,6 +11,10 @@ date_default_timezone_set('America/Sao_Paulo');
 $nivel = isset($_COOKIE['Nivel']) ? $_COOKIE['Nivel'] : '';
 $codigo_aluno = isset($_COOKIE['Codigo']) ? $_COOKIE['Codigo'] : '';
 $codigo_prova = isset($_GET['codigo_prova']) ? $_GET['codigo_prova'] : '';
+
+// Conecta ao banco de dados
+require_once 'conecta.php';
+include 'cabecalho.php';
 
 // Função para obter questões e disciplinas organizadas
 function getQuestoesDisciplinas($con, $codigo_prova) {
