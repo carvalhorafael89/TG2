@@ -31,7 +31,7 @@
 			<div class="col-sm-3 col-lg-3">
 			</div>
 			<div class="col-sm-3 col-lg-3">
-				<div class="widget">
+				<!-- <div class="widget">
 					<h4>Newsletter</h4>
 					<p>Preencha abaixo com seu e-mail para receber notícias</p>
                     <div class="form-group multiple-form-group input-group">
@@ -40,7 +40,7 @@
                             <button type="button" class="btn btn-theme btn-add">Assinar</button>
                         </span>
                     </div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>

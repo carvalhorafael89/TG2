@@ -62,7 +62,7 @@ if ($nivel === 'Professor') {
               <td><input type="text" name="professor" id="professor" size="50" required></td>
             </tr>
             <tr><td>&nbsp;</td><td></td></tr>
-            <tr>
+            <!-- <tr>
               <td><label for="horas">Duração (Horas):</label></td>
               <td><input type="number" name="horas" id="horas" size="3" required></td>
             </tr>
@@ -71,7 +71,7 @@ if ($nivel === 'Professor') {
               <td><label for="minutos">Duração (Minutos):</label></td>
               <td><input type="number" name="minutos" id="minutos" size="3" required></td>
             </tr>
-            <tr><td>&nbsp;</td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td></tr> -->
             <tr>
               <td><label for="codigoacesso">Código de Acesso:</label></td>
               <td><input type="text" name="codigoacesso" id="codigoacesso" size="20" required></td>

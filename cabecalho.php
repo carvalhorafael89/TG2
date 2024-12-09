@@ -151,7 +151,7 @@ if ($nivel == "Aluno" || $modo_aluno) {
         <li><a href="veprova.php">Rever Prova/Simulado</a></li>
     </ul>
     </li>
-    <li><a href="#">Perfil</a></li>';
+    <li><a href="#"></a></li>';
 } elseif ($nivel == "Professor" ) {
     echo '<li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false">Professor <i class="fa fa-angle-down"></i></a>
@@ -186,13 +186,12 @@ if ($nivel == "Aluno" || $modo_aluno) {
               <li><a href="rel1.php">Relatório geral da prova</a></li>
               <li><a href="rel2.php">Relatório da prova por disciplina</a></li>
               <li><a href="rel3.php">Relatório por aluno</a></li>
-              <li><a href="rel4.php">Relatório para Impressão</a></li>
               <li><a href="rel5.php">Baixar relatório geral em Excel</a></li>
           </ul>  
         </li>
     </ul>
     </li>
-    <li><a href="#">Perfil</a></li>';
+    <li><a href="#">    </a></li>';
 }
 
 if ($nivel == "Visitante") {

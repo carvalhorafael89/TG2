@@ -181,7 +181,7 @@ $gabaritos = getGabaritos($con, $codigo_prova);
                                         <?php
                                         $resposta = isset($respostas[$q['questao']]) ? $respostas[$q['questao']] : '';
                                         $correta = $q['correta'];
-                                        $cor = ($resposta === $correta) ? 'lightgreen' : 'transparent';
+                                        $cor = ($resposta === $correta) ? 'lightgreen' : '#ffcccc';
                                         if ($resposta === $correta) {
                                             $acertos++;
                                         }

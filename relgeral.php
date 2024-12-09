@@ -119,8 +119,8 @@ if (isset($_COOKIE['Nivel'])) {
             $queryCorreta = "SELECT Correta FROM cadastro_questoes WHERE Codigo='$questao_id'";
             $resultadoCorreta = mysqli_query($con, $queryCorreta);
             $respostaCorretaArray = mysqli_fetch_assoc($resultadoCorreta);
-            $respostaCorreta = $respostaCorretaArray ? $respostaCorretaArray['Correta'] : '';
-            echo "<td class='highlight'>&nbsp;<b>$respostaCorreta</b>&nbsp;</td>";
+            $respostaCorreta = $respostaCorretaArray ? $respostaCorretaArray['Correta'] : '';   
+            echo "<td class='' style='background-color: lightyellow;'>&nbsp;<b>$respostaCorreta</b>&nbsp;</td>";
         }
         echo "<td></td><td></td><td></td>";
         echo "</tr>";
